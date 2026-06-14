@@ -1,0 +1,104 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Privacy Policy — Real Caffeine Calculator"
+  description="Real Caffeine Calculator collects no personal data. All calculations run entirely in your browser."
+  canonical="https://realcaffeinecalculator.com/privacy-policy"
+>
+
+<section style="padding: 72px 24px 96px;">
+  <div style="max-width: 640px; margin: 0 auto;">
+
+    <p style="font-size: 12px; font-weight: 500; color: #555; letter-spacing: 0.6px; text-transform: uppercase; font-family: 'Courier New', monospace; margin-bottom: 20px;">
+      Legal
+    </p>
+
+    <h1 style="font-size: 36px; font-weight: 600; letter-spacing: -1.4px; color: #fff; line-height: 1.1; margin-bottom: 8px;">
+      Privacy Policy
+    </h1>
+    <p style="font-size: 13px; color: #444; margin-bottom: 48px;">Last updated: June 14, 2026</p>
+
+    <div style="display: flex; flex-direction: column; gap: 36px; color: #888; font-size: 15px; line-height: 1.75;">
+
+      <div>
+        <h2 style="font-size: 16px; font-weight: 600; color: #ededed; margin-bottom: 10px; letter-spacing: -0.3px;">
+          Overview
+        </h2>
+        <p>
+          Real Caffeine Calculator ("we", "the site") is a static web tool. We collect no personal information. All caffeine calculations happen entirely in your browser — no data you enter is transmitted to our servers or any third party.
+        </p>
+      </div>
+
+      <div>
+        <h2 style="font-size: 16px; font-weight: 600; color: #ededed; margin-bottom: 10px; letter-spacing: -0.3px;">
+          Data we do not collect
+        </h2>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px; padding: 0;">
+          {[
+            'Drink inputs or caffeine amounts',
+            'Body weight',
+            'Bedtime or sleep schedule',
+            'IP address or geolocation',
+            'Name, email, or any identifying information',
+            'Browser history or behavior tracking',
+          ].map(item => (
+            <li style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="color: #444; flex-shrink: 0;">—</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h2 style="font-size: 16px; font-weight: 600; color: #ededed; margin-bottom: 10px; letter-spacing: -0.3px;">
+          Cookies
+        </h2>
+        <p>
+          We do not use cookies, local storage, or any form of persistent client-side tracking. Closing the browser tab clears all data you entered.
+        </p>
+      </div>
+
+      <div>
+        <h2 style="font-size: 16px; font-weight: 600; color: #ededed; margin-bottom: 10px; letter-spacing: -0.3px;">
+          Third-party services
+        </h2>
+        <p>
+          The site loads the Inter font from Google Fonts. Google may log the font request in accordance with their own privacy policy. No other third-party scripts, analytics platforms, or ad networks are loaded.
+        </p>
+      </div>
+
+      <div>
+        <h2 style="font-size: 16px; font-weight: 600; color: #ededed; margin-bottom: 10px; letter-spacing: -0.3px;">
+          Contact form
+        </h2>
+        <p>
+          If you submit the contact form on this site, your name, email address, and message are sent directly to us via Formspree, a third-party form service. Please review <a href="https://formspree.io/legal/privacy-policy" target="_blank" rel="noopener" style="color: #0070f3; text-decoration: underline;">Formspree's privacy policy</a> for details on how they handle submitted data. We use your contact information only to respond to your inquiry and do not add you to any mailing lists.
+        </p>
+      </div>
+
+      <div>
+        <h2 style="font-size: 16px; font-weight: 600; color: #ededed; margin-bottom: 10px; letter-spacing: -0.3px;">
+          Changes to this policy
+        </h2>
+        <p>
+          We may update this privacy policy from time to time. Changes take effect when posted on this page. Continued use of the site after changes are posted constitutes acceptance of the updated policy.
+        </p>
+      </div>
+
+      <div>
+        <h2 style="font-size: 16px; font-weight: 600; color: #ededed; margin-bottom: 10px; letter-spacing: -0.3px;">
+          Contact
+        </h2>
+        <p>
+          Questions about this policy? <a href="/contact" style="color: #0070f3; text-decoration: underline;">Contact us here.</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</Layout>

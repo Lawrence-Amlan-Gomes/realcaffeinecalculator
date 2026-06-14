@@ -1,11 +1,843 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How does the caffeine calculator work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It uses caffeine's 5-hour half-life to calculate how much remains in your system over time. Enter your drink, size, and time consumed — the calculator shows your current caffeine level and projects when it drops below the 50mg sleep-safe threshold."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is caffeine half-life?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Caffeine half-life is the time it takes your body to eliminate half the caffeine in your system. For most adults it's about 5 hours, meaning a 200mg coffee at noon leaves ~100mg at 5pm and ~50mg at 10pm."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much caffeine is safe per day?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The FDA considers 400mg per day safe for healthy adults. That's roughly 4 standard cups of home-brewed coffee. The calculator warns you if you exceed this limit."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "When should I stop drinking coffee before bed?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use your bedtime as the target. The calculator works backwards from your bedtime so caffeine drops below 50mg by then. For an 11pm bedtime, your last coffee should typically be before 3–4pm."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does body weight affect caffeine metabolism?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Body weight has a minor effect on caffeine distribution but does not significantly change metabolism rate. The 5-hour half-life is the dominant factor for most adults."
+      }
+    }
+  ]
+};
 ---
 
-<Layout>
-	<Welcome />
+<Layout
+  title="Caffeine Calculator — Real Caffeine Calculator"
+  description="See exactly how much caffeine is in your body right now. Our caffeine half life calculator shows when it's safe to sleep based on your drinks, timing, and bedtime."
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
+
+<!-- ─── Hero ─── -->
+<section style="padding: 56px 24px 40px; text-align: center;">
+  <div style="max-width: 680px; margin: 0 auto;">
+    <h1 style="font-size: 42px; font-weight: 600; letter-spacing: -1.8px; color: #fff; line-height: 1.05; margin-bottom: 14px;">
+      Caffeine Calculator
+    </h1>
+    <p style="font-size: 17px; color: #888; line-height: 1.65; max-width: 520px; margin: 0 auto;">
+      Log your drinks. See exactly how much caffeine is in your system right now — and when it'll be safe to sleep.
+    </p>
+  </div>
+</section>
+
+<!-- ─── Calculator ─── -->
+<section style="padding: 0 24px 64px;">
+  <div style="max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px;">
+
+    <!-- Inputs card -->
+    <div class="calc-card" style="padding: 24px;">
+      <div style="font-size: 12px; font-weight: 500; color: #555; letter-spacing: 0.6px; text-transform: uppercase; font-family: 'Courier New', monospace; margin-bottom: 18px;">
+        Your Drinks
+      </div>
+
+      <div id="drink-rows" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;"></div>
+
+      <button
+        id="add-drink"
+        style="
+          height: 36px;
+          padding: 0 16px;
+          background: transparent;
+          border: 1px solid #1a1a1a;
+          border-radius: 9999px;
+          color: #888;
+          font-size: 13px;
+          font-weight: 500;
+          transition: border-color 0.15s, color 0.15s;
+          cursor: pointer;
+        "
+        onmouseover="this.style.borderColor='#2e2e2e';this.style.color='#ededed'"
+        onmouseout="this.style.borderColor='#1a1a1a';this.style.color='#888'"
+      >
+        + Add another drink
+      </button>
+
+      <!-- Weight + Bedtime -->
+      <div style="
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #111;
+      ">
+        <div>
+          <label style="display: block; font-size: 12px; color: #555; margin-bottom: 6px; font-weight: 500; letter-spacing: -0.1px;">
+            Body weight (lbs) <span style="color:#333;">— shows mg/kg load</span>
+          </label>
+          <input
+            type="number"
+            id="weight"
+            class="calc-input"
+            placeholder="e.g. 160"
+            min="50"
+            max="500"
+            style="width: 100%;"
+          />
+        </div>
+        <div>
+          <label style="display: block; font-size: 12px; color: #555; margin-bottom: 6px; font-weight: 500;">
+            Bedtime
+          </label>
+          <input
+            type="time"
+            id="bedtime"
+            class="calc-input"
+            value="23:00"
+            style="width: 100%;"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Outputs card -->
+    <div class="calc-card">
+
+      <!-- Big number -->
+      <div style="text-align: center; padding: 36px 24px 24px;">
+        <div style="font-size: 76px; font-weight: 600; letter-spacing: -4px; color: #fff; line-height: 1;">
+          <span id="current-mg">0</span><span style="font-size: 30px; font-weight: 400; color: #555; margin-left: 4px; letter-spacing: -1px;">mg</span>
+        </div>
+        <div style="font-size: 13px; color: #555; margin-top: 6px; letter-spacing: -0.1px;">
+          caffeine in your system right now
+        </div>
+        <div style="margin-top: 16px;">
+          <span id="status-badge" class="status-badge neutral">Log a drink to start</span>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div style="padding: 0 20px 4px;">
+        <svg
+          id="caffeine-chart"
+          viewBox="0 0 600 200"
+          width="100%"
+          preserveAspectRatio="xMidYMid meet"
+          style="display: block; overflow: visible;"
+          aria-label="Caffeine decay chart"
+        >
+          <text x="300" y="92" text-anchor="middle" fill="#222" font-size="14" font-family="Inter, sans-serif" font-weight="500">Add a drink above</text>
+          <text x="300" y="112" text-anchor="middle" fill="#1a1a1a" font-size="12" font-family="Inter, sans-serif">to see your caffeine decay chart</text>
+        </svg>
+
+        <!-- Chart legend — hidden until drinks are logged -->
+        <div id="chart-legend" style="display:none; flex-wrap:wrap; gap:8px 20px; padding:10px 4px 0;">
+          <span style="display:flex;align-items:center;gap:6px;">
+            <svg width="20" height="8" style="flex-shrink:0"><line x1="0" y1="4" x2="20" y2="4" stroke="#0070f3" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <span style="font-size:11px;color:#555;white-space:nowrap;">Caffeine level</span>
+          </span>
+          <span style="display:flex;align-items:center;gap:6px;">
+            <svg width="20" height="8" style="flex-shrink:0"><line x1="0" y1="4" x2="20" y2="4" stroke="#f5a623" stroke-width="1.5" stroke-dasharray="5,4"/></svg>
+            <span style="font-size:11px;color:#555;white-space:nowrap;">Sleep threshold (50mg)</span>
+          </span>
+          <span style="display:flex;align-items:center;gap:6px;">
+            <svg width="10" height="12" style="flex-shrink:0"><line x1="5" y1="0" x2="5" y2="12" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-dasharray="3,2.5"/></svg>
+            <span style="font-size:11px;color:#555;white-space:nowrap;">Now</span>
+          </span>
+          <span style="display:flex;align-items:center;gap:6px;">
+            <svg width="10" height="12" style="flex-shrink:0"><line x1="5" y1="0" x2="5" y2="12" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.85"/></svg>
+            <span style="font-size:11px;color:#555;white-space:nowrap;">Bedtime</span>
+          </span>
+          <span style="display:flex;align-items:center;gap:6px;">
+            <svg width="14" height="8" style="flex-shrink:0"><rect x="0" y="0" width="14" height="8" fill="#22c55e" fill-opacity="0.25" rx="1.5"/></svg>
+            <span style="font-size:11px;color:#555;white-space:nowrap;">Safe (&lt;50mg)</span>
+          </span>
+          <span style="display:flex;align-items:center;gap:6px;">
+            <svg width="14" height="8" style="flex-shrink:0"><rect x="0" y="0" width="14" height="8" fill="#f5a623" fill-opacity="0.25" rx="1.5"/></svg>
+            <span style="font-size:11px;color:#555;white-space:nowrap;">Moderate (50–150mg)</span>
+          </span>
+          <span style="display:flex;align-items:center;gap:6px;">
+            <svg width="14" height="8" style="flex-shrink:0"><rect x="0" y="0" width="14" height="8" fill="#ef4444" fill-opacity="0.22" rx="1.5"/></svg>
+            <span style="font-size:11px;color:#555;white-space:nowrap;">High (&gt;150mg)</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Clears at / Latest safe -->
+      <div style="
+        margin: 4px 20px 0;
+        padding: 16px 0;
+        border-top: 1px solid #111;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      ">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="stat-label" style="font-size: 13px; color: #555;">Caffeine clears at <span class="stat-sub" style="color:#333; font-size:11px;">(below 50mg)</span></span>
+          <span id="clears-at" style="font-size: 14px; color: #ededed; font-weight: 500; font-variant-numeric: tabular-nums;">—</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="stat-label" style="font-size: 13px; color: #555;">Latest safe coffee time <span class="stat-sub" style="color:#333; font-size:11px;">(standard cup)</span></span>
+          <span id="latest-safe" style="font-size: 14px; color: #ededed; font-weight: 500; font-variant-numeric: tabular-nums;">—</span>
+        </div>
+        <div id="mgkg-row" style="display:none; justify-content:space-between; align-items:center;">
+          <span style="font-size: 13px; color: #555;">Total caffeine load <span style="color:#333; font-size:11px;">(mg per kg bodyweight)</span></span>
+          <span id="mgkg-val" style="font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums;">—</span>
+        </div>
+      </div>
+
+      <!-- 400mg warning -->
+      <div id="overdose-warning" class="warning-banner" style="margin: 8px 20px 20px; display: none;">
+        <span style="flex-shrink:0;">⚠</span>
+        <span>Total intake exceeds 400mg — the FDA's recommended daily maximum. Consider stopping for the day.</span>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── SEO content ─── -->
+<section style="
+  border-top: 1px solid #111;
+  padding: 72px 24px;
+  background: #020202;
+">
+  <div style="max-width: 680px; margin: 0 auto;">
+
+    <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -1px; color: #fff; margin-bottom: 40px; line-height: 1.2;">
+      Understanding Caffeine Half-Life
+    </h2>
+
+    <div style="display: flex; flex-direction: column; gap: 36px;">
+
+      <div>
+        <h3 style="font-size: 16px; font-weight: 600; color: #ededed; margin-bottom: 10px; letter-spacing: -0.3px;">
+          What is caffeine half-life?
+        </h3>
+        <p style="font-size: 15px; color: #888; line-height: 1.75;">
+          Caffeine half-life is the time it takes your body to eliminate half the caffeine in your bloodstream. For most healthy adults, this sits at roughly 5 hours — meaning if you drink a coffee with 200mg of caffeine at noon, you'll have 100mg left at 5&nbsp;PM, 50mg by 10&nbsp;PM, and 25mg by 3&nbsp;AM. This is precisely why that afternoon pick-me-up can have you staring at the ceiling at midnight. Our <strong style="color:#ededed; font-weight:500;">caffeine half life calculator</strong> uses this pharmacokinetic constant to plot your exact position on the decay curve in real time, so there's no more guessing.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="font-size: 16px; font-weight: 600; color: #ededed; margin-bottom: 10px; letter-spacing: -0.3px;">
+          How this caffeine calculator works
+        </h3>
+        <p style="font-size: 15px; color: #888; line-height: 1.75;">
+          This <strong style="color:#ededed; font-weight:500;">caffeine calculator</strong> applies the standard exponential decay formula: <em>remaining_mg = dose_mg × (0.5 ^ (hours_elapsed / 5))</em>. When you log multiple drinks, each one gets its own independent decay curve, and the calculator sums them at any given moment to show your total. The chart spans from your first drink to 24 hours later. The orange dashed line marks the 50mg sleep-safe threshold — the level at which most people can fall asleep without meaningful caffeine interference. The "Caffeine clears at" field tells you the exact time you'll cross below 50mg, and "Latest safe coffee time" works backwards from your bedtime to find the last moment you could have a standard 95mg cup without disrupting sleep.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="font-size: 16px; font-weight: 600; color: #ededed; margin-bottom: 10px; letter-spacing: -0.3px;">
+          Why timing matters for sleep
+        </h3>
+        <p style="font-size: 15px; color: #888; line-height: 1.75;">
+          Sleep quality degrades from caffeine well before you "feel" wired. Research published in the Journal of Clinical Sleep Medicine found that caffeine consumed 6 hours before bed reduces total sleep time by over an hour — even when subjects reported falling asleep without difficulty. Caffeine blocks adenosine receptors, the brain's primary sleep-pressure signal, creating a false sense of alertness that suppresses deep, restorative sleep stages. At 50mg remaining, the blocking effect is minimal for most adults, which is why this calculator uses that as the sleep-safe threshold. If you're experiencing fragmented sleep, poor recovery, or early morning grogginess, your caffeine timing may be the culprit even if your last cup was hours ago. The bedtime field lets you set a personalized cutoff based on your actual schedule rather than a generic recommendation.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="font-size: 16px; font-weight: 600; color: #ededed; margin-bottom: 10px; letter-spacing: -0.3px;">
+          How much caffeine is safe per day?
+        </h3>
+        <p style="font-size: 15px; color: #888; line-height: 1.75;">
+          The FDA recommends a maximum of 400mg of caffeine per day for healthy adults — roughly four standard cups of drip coffee. Above this, caffeine commonly causes increased heart rate, anxiety, headaches, and compounded sleep disruption. Individual tolerance varies significantly. A <strong style="color:#ededed; font-weight:500;">caffeine calculator by weight and age</strong> reveals important nuance: children and adolescents should avoid caffeine entirely; pregnant women are advised to stay under 200mg daily; and some adults carry genetic variants of the CYP1A2 enzyme that cause caffeine to metabolize two to four times more slowly than average, making 200mg feel like 400mg. This calculator flags your intake when it surpasses the FDA's 400mg ceiling so you can make an informed call before reaching for another cup.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="font-size: 16px; font-weight: 600; color: #ededed; margin-bottom: 10px; letter-spacing: -0.3px;">
+          How different drinks compare
+        </h3>
+        <p style="font-size: 15px; color: #888; line-height: 1.75;">
+          Caffeine content varies enormously between drinks. A Starbucks Cold Brew packs 205mg — nearly three times a standard espresso shot at 75mg. Energy drinks raise the stakes further: Bang Energy delivers 300mg per can, while Monster contains 160mg and Red Bull sits at 80mg. Traditional beverages are more modest — home-brewed coffee averages 95mg per 8oz cup, black tea contains around 47mg, and green tea a lighter 28mg. Even "low caffeine" options accumulate: three cups of black tea totals 141mg, on par with a Starbucks Latte. Size compounds everything; large drip coffees at chain restaurants routinely hit 300–400mg on their own. Log your actual drinks and sizes in this <strong style="color:#ededed; font-weight:500;">caffeine calculator</strong> to see exactly where your day's intake lands versus the 400mg daily limit — no estimating required.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ─── -->
+<section style="
+  border-top: 1px solid #111;
+  padding: 72px 24px;
+  background: #000;
+">
+  <div style="max-width: 680px; margin: 0 auto;">
+
+    <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -1px; color: #fff; margin-bottom: 40px; line-height: 1.2;">
+      Frequently Asked Questions
+    </h2>
+
+    <div style="display: flex; flex-direction: column; gap: 0;">
+
+      <details style="border-top: 1px solid #111; padding: 20px 0;">
+        <summary style="font-size: 16px; font-weight: 600; color: #ededed; cursor: pointer; letter-spacing: -0.3px; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+          How does the caffeine calculator work?
+          <span style="color: #444; font-size: 20px; font-weight: 300; flex-shrink: 0; margin-left: 16px;">+</span>
+        </summary>
+        <p style="font-size: 15px; color: #888; line-height: 1.75; margin-top: 12px; margin-bottom: 0;">
+          It uses caffeine's 5-hour half-life to calculate how much remains in your system over time. Enter your drink, size, and time consumed — the calculator shows your current caffeine level and projects when it drops below the 50mg sleep-safe threshold.
+        </p>
+      </details>
+
+      <details style="border-top: 1px solid #111; padding: 20px 0;">
+        <summary style="font-size: 16px; font-weight: 600; color: #ededed; cursor: pointer; letter-spacing: -0.3px; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+          What is caffeine half-life?
+          <span style="color: #444; font-size: 20px; font-weight: 300; flex-shrink: 0; margin-left: 16px;">+</span>
+        </summary>
+        <p style="font-size: 15px; color: #888; line-height: 1.75; margin-top: 12px; margin-bottom: 0;">
+          Caffeine half-life is the time it takes your body to eliminate half the caffeine in your system. For most adults it's about 5 hours, meaning a 200mg coffee at noon leaves ~100mg at 5pm and ~50mg at 10pm.
+        </p>
+      </details>
+
+      <details style="border-top: 1px solid #111; padding: 20px 0;">
+        <summary style="font-size: 16px; font-weight: 600; color: #ededed; cursor: pointer; letter-spacing: -0.3px; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+          How much caffeine is safe per day?
+          <span style="color: #444; font-size: 20px; font-weight: 300; flex-shrink: 0; margin-left: 16px;">+</span>
+        </summary>
+        <p style="font-size: 15px; color: #888; line-height: 1.75; margin-top: 12px; margin-bottom: 0;">
+          The FDA considers 400mg per day safe for healthy adults. That's roughly 4 standard cups of home-brewed coffee. The calculator warns you if you exceed this limit.
+        </p>
+      </details>
+
+      <details style="border-top: 1px solid #111; padding: 20px 0;">
+        <summary style="font-size: 16px; font-weight: 600; color: #ededed; cursor: pointer; letter-spacing: -0.3px; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+          When should I stop drinking coffee before bed?
+          <span style="color: #444; font-size: 20px; font-weight: 300; flex-shrink: 0; margin-left: 16px;">+</span>
+        </summary>
+        <p style="font-size: 15px; color: #888; line-height: 1.75; margin-top: 12px; margin-bottom: 0;">
+          Use your bedtime as the target. The calculator works backwards from your bedtime so caffeine drops below 50mg by then. For an 11pm bedtime, your last coffee should typically be before 3–4pm.
+        </p>
+      </details>
+
+      <details style="border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 20px 0;">
+        <summary style="font-size: 16px; font-weight: 600; color: #ededed; cursor: pointer; letter-spacing: -0.3px; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+          Does body weight affect caffeine metabolism?
+          <span style="color: #444; font-size: 20px; font-weight: 300; flex-shrink: 0; margin-left: 16px;">+</span>
+        </summary>
+        <p style="font-size: 15px; color: #888; line-height: 1.75; margin-top: 12px; margin-bottom: 0;">
+          Body weight has a minor effect on caffeine distribution but does not significantly change metabolism rate. The 5-hour half-life is the dominant factor for most adults.
+        </p>
+      </details>
+
+    </div>
+  </div>
+</section>
+
 </Layout>
+
+<script>
+  const DRINKS = [
+    { id: 'sbux-espresso',  name: 'Starbucks Espresso Shot', mg: 75,  fixed: true  },
+    { id: 'sbux-latte',     name: 'Starbucks Latte',         mg: 150, fixed: false },
+    { id: 'sbux-coldbrew',  name: 'Starbucks Cold Brew',     mg: 205, fixed: false },
+    { id: 'dunkin-coffee',  name: 'Dunkin Medium Coffee',    mg: 210, fixed: false },
+    { id: 'dunkin-espresso',name: 'Dunkin Espresso',         mg: 118, fixed: true  },
+    { id: 'red-bull',       name: 'Red Bull',                mg: 80,  fixed: true  },
+    { id: 'monster',        name: 'Monster',                 mg: 160, fixed: true  },
+    { id: 'bang',           name: 'Bang Energy',             mg: 300, fixed: true  },
+    { id: 'home-coffee',    name: 'Home Brewed Coffee',      mg: 95,  fixed: false },
+    { id: 'black-tea',      name: 'Black Tea',               mg: 47,  fixed: false },
+    { id: 'green-tea',      name: 'Green Tea',               mg: 28,  fixed: false },
+    { id: 'diet-coke',      name: 'Diet Coke',               mg: 46,  fixed: true  },
+    { id: 'custom',         name: 'Custom',                  mg: 0,   fixed: true, custom: true },
+  ];
+
+  const SIZE_MULT = { small: 0.75, medium: 1.0, large: 1.4 };
+
+  let rowCounter = 0;
+
+  function getNow() {
+    const d = new Date();
+    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  }
+
+  function timeStrToMs(timeStr) {
+    const [h, m] = timeStr.split(':').map(Number);
+    const d = new Date();
+    d.setHours(h, m, 0, 0);
+    const ms = d.getTime();
+    // If more than 1 hour in the future, assume yesterday
+    if (ms > Date.now() + 60 * 60 * 1000) return ms - 86400000;
+    return ms;
+  }
+
+  function getBedtimeMs() {
+    const val = (document.getElementById('bedtime')).value || '23:00';
+    const [h, m] = val.split(':').map(Number);
+    const d = new Date();
+    d.setHours(h, m, 0, 0);
+    let ms = d.getTime();
+    if (ms <= Date.now()) ms += 86400000;
+    return ms;
+  }
+
+  function calcCaffeineAt(entries, targetMs) {
+    return entries.reduce((sum, e) => {
+      if (!e.baseMg || e.baseMg <= 0 || !e.drinkMs) return sum;
+      const elapsedH = (targetMs - e.drinkMs) / 3600000;
+      if (elapsedH < 0) return sum;
+      return sum + e.baseMg * Math.pow(0.5, elapsedH / 5);
+    }, 0);
+  }
+
+  function getEntries() {
+    const rows = document.querySelectorAll('.drink-row');
+    return Array.from(rows).map(row => {
+      const drinkSelect = row.querySelector('.drink-select');
+      const sizeSelect  = row.querySelector('.size-select');
+      const timeInput   = row.querySelector('.time-input');
+      const customInput = row.querySelector('.custom-mg');
+
+      const drinkId = drinkSelect ? drinkSelect.value : '';
+      const drink   = DRINKS.find(d => d.id === drinkId);
+      if (!drink) return { baseMg: 0, drinkMs: null };
+
+      let baseMg;
+      if (drink.custom) {
+        baseMg = parseFloat(customInput ? customInput.value : '0') || 0;
+      } else if (drink.fixed) {
+        baseMg = drink.mg;
+      } else {
+        const size = sizeSelect ? sizeSelect.value : 'medium';
+        baseMg = drink.mg * (SIZE_MULT[size] || 1.0);
+      }
+
+      const timeStr = timeInput ? timeInput.value : '';
+      const drinkMs = timeStr ? timeStrToMs(timeStr) : null;
+
+      return { baseMg, drinkMs };
+    });
+  }
+
+  function formatTime(ms) {
+    const d = new Date(ms);
+    return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  }
+
+  function chartColors() {
+    const light = document.documentElement.classList.contains('light');
+    return {
+      grid:       light ? '#e8e8e8' : '#111',
+      axes:       light ? '#d0d0d0' : '#1e1e1e',
+      tick:       light ? '#999'    : '#333',
+      yLabel:     light ? '#bbb'    : '#2d2d2d',
+      nowText:    light ? '#aaa'    : '#555',
+      emptyMain:  light ? '#bbb'    : '#444',
+      emptySub:   light ? '#d0d0d0' : '#333',
+    };
+  }
+
+  function updateChart(entries) {
+    const svg = document.getElementById('caffeine-chart');
+    if (!svg) return;
+
+    const legendEl = document.getElementById('chart-legend');
+    const C = chartColors();
+
+    if (entries.length === 0) {
+      svg.innerHTML = `
+        <text x="300" y="92" text-anchor="middle" fill="${C.emptyMain}" font-size="14" font-family="Inter, sans-serif" font-weight="500">Add a drink above</text>
+        <text x="300" y="112" text-anchor="middle" fill="${C.emptySub}" font-size="12" font-family="Inter, sans-serif">to see your caffeine decay chart</text>
+      `;
+      if (legendEl) legendEl.style.display = 'none';
+      return;
+    }
+
+    if (legendEl) legendEl.style.display = 'flex';
+
+    const firstDrink = Math.min(...entries.map(e => e.drinkMs));
+    const startMs = firstDrink;
+    const endMs   = startMs + 24 * 3600000;
+    const nowMs   = Date.now();
+    const bedMs   = getBedtimeMs();
+
+    // Sample 240 points for a smooth curve
+    const STEPS = 240;
+    let maxMg = 60;
+    const pts = [];
+    for (let i = 0; i <= STEPS; i++) {
+      const t  = startMs + (i / STEPS) * (endMs - startMs);
+      const mg = calcCaffeineAt(entries, t);
+      pts.push({ t, mg });
+      if (mg > maxMg) maxMg = mg;
+    }
+    maxMg = maxMg * 1.15;
+
+    // Layout constants
+    const VW = 600, VH = 200;
+    const PL = 52, PR = 16, PT = 20, PB = 32;
+    const W  = VW - PL - PR;
+    const H  = VH - PT - PB;
+    const chartTop    = PT;
+    const chartBottom = PT + H;
+
+    const xS = (t)  => PL + ((t - startMs) / (endMs - startMs)) * W;
+    const yS = (mg) => PT + H - Math.min((mg / maxMg) * H, H);
+
+    // Curve points
+    const polyPts = pts.map(p => `${xS(p.t).toFixed(1)},${yS(p.mg).toFixed(1)}`).join(' ');
+    const fillPts = `${PL},${chartBottom} ${polyPts} ${(PL + W).toFixed(1)},${chartBottom}`;
+
+    // Zone threshold pixel positions (clamped to chart area)
+    const y50_px  = Math.max(chartTop, Math.min(chartBottom, yS(50)));
+    const y150_px = Math.max(chartTop, Math.min(chartBottom, yS(150)));
+
+    // 50mg threshold line y
+    const y50line = yS(50).toFixed(1);
+
+    // "Now" marker
+    const nowInRange = nowMs >= startMs && nowMs <= endMs;
+    const nowX  = nowInRange ? xS(nowMs) : null;
+    const nowMg_val = nowInRange ? calcCaffeineAt(entries, nowMs) : 0;
+    const nowY  = nowInRange ? yS(nowMg_val) : null;
+
+    // Bedtime marker
+    const bedInRange = bedMs >= startMs && bedMs <= endMs;
+    const bedX = bedInRange ? xS(bedMs) : null;
+
+    // X-axis time labels every 3 hours
+    const xLabels = [];
+    for (let h = 0; h <= 24; h += 4) {
+      xLabels.push({ x: xS(startMs + h * 3600000), label: formatTime(startMs + h * 3600000) });
+    }
+
+    // Y-axis labels with smart step
+    const yStep = maxMg > 400 ? 100 : maxMg > 200 ? 50 : maxMg > 100 ? 25 : 10;
+    const yLabels = [];
+    for (let mg = 0; mg <= maxMg; mg += yStep) {
+      const y = yS(mg);
+      if (y >= chartTop - 4) yLabels.push({ y, label: mg });
+    }
+
+    svg.innerHTML = `
+      <defs>
+        <linearGradient id="curveGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#0070f3" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#0070f3" stop-opacity="0.02"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Background zone bands: green=safe, amber=moderate, red=high -->
+      <rect x="${PL}" y="${y50_px.toFixed(1)}" width="${W}" height="${(chartBottom - y50_px).toFixed(1)}" fill="#22c55e" fill-opacity="0.07"/>
+      ${y50_px > chartTop + 1 ? `<rect x="${PL}" y="${y150_px.toFixed(1)}" width="${W}" height="${(y50_px - y150_px).toFixed(1)}" fill="#f5a623" fill-opacity="0.07"/>` : ''}
+      ${y150_px > chartTop + 1 ? `<rect x="${PL}" y="${chartTop}" width="${W}" height="${(y150_px - chartTop).toFixed(1)}" fill="#ef4444" fill-opacity="0.07"/>` : ''}
+
+      <!-- Horizontal grid lines + Y-axis tick labels -->
+      ${yLabels.map(({ y, label }) => `
+        <line x1="${PL}" y1="${y.toFixed(1)}" x2="${(PL+W).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${C.grid}" stroke-width="1"/>
+        <text x="${(PL-6).toFixed(1)}" y="${(y+3.5).toFixed(1)}" text-anchor="end" fill="${C.tick}" font-size="10" font-family="Inter,sans-serif">${label}</text>
+      `).join('')}
+
+      <!-- Y-axis label -->
+      <text x="9" y="${(PT + H / 2 + 2).toFixed(1)}" text-anchor="middle" fill="${C.yLabel}" font-size="9" font-family="Inter,sans-serif" transform="rotate(-90,9,${(PT + H / 2 + 2).toFixed(1)})">mg caffeine</text>
+
+      <!-- 50mg sleep-safe threshold line -->
+      <line x1="${PL}" y1="${y50line}" x2="${(PL+W).toFixed(1)}" y2="${y50line}" stroke="#f5a623" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <text x="${(PL+5).toFixed(1)}" y="${(parseFloat(y50line)-4).toFixed(1)}" fill="#7a5c0a" font-size="9" font-family="Inter,sans-serif">sleep-safe 50mg</text>
+
+      <!-- "Now" vertical marker -->
+      ${nowX != null ? `
+        <line x1="${nowX.toFixed(1)}" y1="${chartTop}" x2="${nowX.toFixed(1)}" y2="${chartBottom}" stroke="#ffffff" stroke-width="1" stroke-dasharray="3,3" opacity="0.35"/>
+        <text x="${nowX.toFixed(1)}" y="${(chartTop - 5).toFixed(1)}" text-anchor="middle" fill="${C.nowText}" font-size="9" font-family="Inter,sans-serif">now</text>
+      ` : ''}
+
+      <!-- Bedtime vertical marker -->
+      ${bedX != null ? `
+        <line x1="${bedX.toFixed(1)}" y1="${chartTop}" x2="${bedX.toFixed(1)}" y2="${chartBottom}" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.75"/>
+        <text x="${bedX.toFixed(1)}" y="${(chartTop - 5).toFixed(1)}" text-anchor="middle" fill="#8b5cf6" font-size="9" font-family="Inter,sans-serif">bedtime</text>
+      ` : ''}
+
+      <!-- Gradient area fill under curve -->
+      <polygon points="${fillPts}" fill="url(#curveGrad)"/>
+
+      <!-- Caffeine decay curve -->
+      <polyline points="${polyPts}" fill="none" stroke="#0070f3" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+
+      <!-- "Now" dot on curve — bullseye marker -->
+      ${nowX != null && nowY != null ? `
+        <circle cx="${nowX.toFixed(1)}" cy="${nowY.toFixed(1)}" r="5" fill="#0070f3" stroke="#000" stroke-width="1.5"/>
+        <circle cx="${nowX.toFixed(1)}" cy="${nowY.toFixed(1)}" r="2" fill="#fff"/>
+      ` : ''}
+
+      <!-- X-axis time labels -->
+      ${xLabels.map(({ x, label }) => `
+        <text x="${x.toFixed(1)}" y="${(chartBottom + 16).toFixed(1)}" text-anchor="middle" fill="${C.tick}" font-size="9" font-family="Inter,sans-serif">${label}</text>
+      `).join('')}
+
+      <!-- Chart axes -->
+      <line x1="${PL}" y1="${chartTop}" x2="${PL}" y2="${chartBottom}" stroke="${C.axes}" stroke-width="1"/>
+      <line x1="${PL}" y1="${chartBottom}" x2="${(PL+W).toFixed(1)}" y2="${chartBottom}" stroke="${C.axes}" stroke-width="1"/>
+    `;
+  }
+
+  function calculate() {
+    const entries     = getEntries();
+    const nowMs       = Date.now();
+    const validEntries = entries.filter(e => e.baseMg > 0 && e.drinkMs !== null);
+    const hasData     = validEntries.length > 0;
+
+    const currentMg   = calcCaffeineAt(validEntries, nowMs);
+    const totalIntake = entries.reduce((s, e) => s + (e.baseMg || 0), 0);
+
+    // Current mg display
+    const mgEl = document.getElementById('current-mg');
+    if (mgEl) mgEl.textContent = Math.round(currentMg).toString();
+
+    // Status badge — neutral when no drinks logged
+    const badge = document.getElementById('status-badge');
+    if (badge) {
+      if (!hasData) {
+        badge.className  = 'status-badge neutral';
+        badge.textContent = 'Log a drink to start';
+      } else if (currentMg <= 50) {
+        badge.className  = 'status-badge safe';
+        badge.textContent = 'Safe to sleep';
+      } else if (currentMg <= 150) {
+        badge.className  = 'status-badge warn';
+        badge.textContent = 'Cutting it close';
+      } else {
+        badge.className  = 'status-badge danger';
+        badge.textContent = 'Too much for sleep';
+      }
+    }
+
+    // Clears at — time caffeine drops below 50mg
+    const clearsEl = document.getElementById('clears-at');
+    if (clearsEl) {
+      if (!hasData) {
+        clearsEl.textContent = '—';
+      } else if (currentMg < 50) {
+        clearsEl.textContent = 'Already clear';
+      } else {
+        let clearMs = null;
+        for (let min = 0; min <= 1440; min += 5) {
+          const t  = nowMs + min * 60000;
+          const mg = calcCaffeineAt(validEntries, t);
+          if (mg < 50) { clearMs = t; break; }
+        }
+        clearsEl.textContent = clearMs ? formatTime(clearMs) : '> 24 hrs';
+      }
+    }
+
+    // Latest safe coffee time — works back from bedtime
+    const safeEl = document.getElementById('latest-safe');
+    if (safeEl) {
+      const isLight = document.documentElement.classList.contains('light');
+      if (!hasData) {
+        safeEl.textContent = '—';
+        safeEl.style.color = isLight ? '#111' : '#ededed';
+      } else {
+        const bedMs = getBedtimeMs();
+        const existingAtBed = calcCaffeineAt(validEntries, bedMs);
+        const headroom = 50 - existingAtBed;
+
+        if (headroom <= 0) {
+          safeEl.textContent = 'None today';
+          safeEl.style.color = '#ef4444';
+        } else {
+          const REF_MG = 95;
+          const hoursNeeded = 5 * Math.log2(REF_MG / headroom);
+          const latestMs = bedMs - hoursNeeded * 3600000;
+          if (latestMs < nowMs - 3600000) {
+            safeEl.textContent = 'Window passed';
+            safeEl.style.color = isLight ? '#555' : '#888';
+          } else {
+            safeEl.textContent = formatTime(latestMs);
+            safeEl.style.color = isLight ? '#111' : '#ededed';
+          }
+        }
+      }
+    }
+
+    // 400mg daily limit warning
+    const warnEl = document.getElementById('overdose-warning');
+    if (warnEl) {
+      warnEl.style.display = totalIntake > 400 ? 'flex' : 'none';
+    }
+
+    // mg/kg load — only when weight is provided
+    const weightLbs = parseFloat((document.getElementById('weight')).value || '0') || 0;
+    const mgkgRow = document.getElementById('mgkg-row');
+    const mgkgVal = document.getElementById('mgkg-val');
+    if (mgkgRow && mgkgVal) {
+      if (weightLbs > 0 && totalIntake > 0) {
+        const weightKg = weightLbs * 0.453592;
+        const mgPerKg  = totalIntake / weightKg;
+        mgkgRow.style.display = 'flex';
+        mgkgVal.textContent   = mgPerKg.toFixed(1) + ' mg/kg';
+        mgkgVal.style.color   = mgPerKg > 6 ? '#ef4444' : mgPerKg > 3 ? '#f5a623' : '#22c55e';
+      } else {
+        mgkgRow.style.display = 'none';
+      }
+    }
+
+    // Chart
+    updateChart(validEntries);
+  }
+
+  function updateRemoveButtons() {
+    const rows = document.querySelectorAll('.drink-row');
+    rows.forEach(row => {
+      const btn = row.querySelector('.remove-btn');
+      if (btn) {
+        (btn).style.visibility = rows.length <= 1 ? 'hidden' : 'visible';
+      }
+    });
+  }
+
+  function createDrinkRow() {
+    const id  = rowCounter++;
+    const div = document.createElement('div');
+    div.className = 'drink-row';
+    div.dataset.rowId = String(id);
+    div.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;';
+
+    const IS = 'height:40px;background:#050505;border:1px solid #1a1a1a;border-radius:6px;color:#ededed;padding:0 12px;font-size:14px;outline:none;';
+
+    // Drink select
+    const drinkSel = document.createElement('select');
+    drinkSel.className = 'drink-select calc-input';
+    drinkSel.style.cssText = IS + 'flex:1;min-width:180px;cursor:pointer;';
+    DRINKS.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d.id;
+      opt.textContent = d.custom ? 'Custom (enter mg)' : `${d.name} — ${d.mg}mg`;
+      drinkSel.appendChild(opt);
+    });
+
+    // Size select
+    const sizeSel = document.createElement('select');
+    sizeSel.className = 'size-select calc-input';
+    sizeSel.style.cssText = IS + 'width:106px;cursor:pointer;';
+    [['small','Small'],['medium','Regular'],['large','Large']].forEach(([v,l]) => {
+      const opt = document.createElement('option');
+      opt.value = v; opt.textContent = l;
+      if (v === 'medium') opt.selected = true;
+      sizeSel.appendChild(opt);
+    });
+
+    // Time input
+    const timeIn = document.createElement('input');
+    timeIn.type = 'time';
+    timeIn.className = 'time-input calc-input';
+    timeIn.style.cssText = IS + 'width:122px;';
+    timeIn.value = getNow();
+
+    // Custom mg
+    const customIn = document.createElement('input');
+    customIn.type = 'number';
+    customIn.className = 'custom-mg calc-input';
+    customIn.placeholder = 'mg';
+    customIn.min = '0'; customIn.max = '1000';
+    customIn.style.cssText = IS + 'width:76px;display:none;';
+
+    // Remove button
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-btn';
+    removeBtn.type = 'button';
+    removeBtn.innerHTML = '&times;';
+    removeBtn.style.cssText = `
+      width:32px;height:32px;flex-shrink:0;
+      border-radius:50%;border:1px solid #1a1a1a;
+      background:transparent;color:#555;
+      font-size:18px;line-height:1;
+      display:flex;align-items:center;justify-content:center;
+      transition:color 0.15s,border-color 0.15s;
+      visibility:hidden;
+    `;
+    removeBtn.addEventListener('mouseover', () => { removeBtn.style.color='#ef4444'; removeBtn.style.borderColor='#3a0a0a'; });
+    removeBtn.addEventListener('mouseout',  () => { removeBtn.style.color='#555'; removeBtn.style.borderColor='#1a1a1a'; });
+    removeBtn.addEventListener('click', () => { div.remove(); updateRemoveButtons(); calculate(); });
+
+    function syncVisibility() {
+      const drink = DRINKS.find(d => d.id === drinkSel.value);
+      if (!drink) return;
+      sizeSel.style.display   = drink.fixed  ? 'none' : '';
+      customIn.style.display  = drink.custom ? '' : 'none';
+    }
+
+    drinkSel.addEventListener('change', () => { syncVisibility(); calculate(); });
+    sizeSel.addEventListener('change', calculate);
+    timeIn.addEventListener('change', calculate);
+    customIn.addEventListener('input', calculate);
+
+    div.appendChild(drinkSel);
+    div.appendChild(sizeSel);
+    div.appendChild(timeIn);
+    div.appendChild(customIn);
+    div.appendChild(removeBtn);
+
+    syncVisibility();
+    return div;
+  }
+
+  // ─── Init ───
+  const drinkRowsEl = document.getElementById('drink-rows');
+  if (drinkRowsEl) {
+    drinkRowsEl.appendChild(createDrinkRow());
+  }
+
+  document.getElementById('add-drink')?.addEventListener('click', () => {
+    if (drinkRowsEl) {
+      drinkRowsEl.appendChild(createDrinkRow());
+      updateRemoveButtons();
+      calculate();
+    }
+  });
+
+  document.getElementById('bedtime')?.addEventListener('change', calculate);
+  document.getElementById('weight')?.addEventListener('input', calculate);
+
+  // Initial calculation
+  calculate();
+
+  // Refresh every 60 seconds (live "now" update)
+  setInterval(calculate, 60000);
+
+  // Re-render chart with correct colours when theme toggles
+  document.addEventListener('theme-change', calculate);
+</script>

@@ -1,0 +1,267 @@
+---
+const currentPath = Astro.url.pathname;
+
+const navLinks = [
+  { href: '/', label: 'Calculator' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+];
+---
+
+<header id="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-logo">Real Caffeine Calculator</a>
+
+    <!-- Desktop nav -->
+    <nav class="desktop-nav" aria-label="Main navigation">
+      {navLinks.map(link => (
+        <a
+          href={link.href}
+          class={`nav-link${currentPath === link.href ? ' active' : ''}`}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <!-- Right-side controls: theme toggle + hamburger -->
+    <div class="header-controls">
+      <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme" title="Toggle light / dark mode">
+        <!-- Sun: shown in dark mode -->
+        <svg id="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1"  x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22"   x2="5.64"  y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1"  y1="12" x2="3"  y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78"  x2="5.64"  y2="18.36"/>
+          <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
+        </svg>
+        <!-- Moon: shown in light mode -->
+        <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+
+      <!-- Hamburger: mobile only -->
+      <button id="menu-toggle" class="icon-btn hamburger-btn" aria-label="Open menu" aria-expanded="false">
+        <svg id="icon-bars" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <line x1="3" y1="6"  x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+        <svg id="icon-x" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <line x1="18" y1="6"  x2="6"  y2="18"/>
+          <line x1="6"  y1="6"  x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile dropdown -->
+  <nav id="mobile-menu" class="mobile-nav" aria-label="Mobile navigation" hidden>
+    {navLinks.map(link => (
+      <a
+        href={link.href}
+        class={`mobile-nav-link${currentPath === link.href ? ' active' : ''}`}
+      >
+        {link.label}
+      </a>
+    ))}
+  </nav>
+</header>
+
+<style>
+  #site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid #1a1a1a;
+    transition: background 0.25s, border-color 0.25s;
+  }
+
+  :global(html.light) #site-header {
+    background: rgba(255, 255, 255, 0.92);
+    border-bottom-color: #e5e5e5;
+  }
+
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  /* Logo */
+  .site-logo {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: color 0.2s;
+  }
+  :global(html.light) .site-logo { color: #111; }
+
+  /* Desktop nav */
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+    justify-content: flex-end;
+    margin-right: 4px;
+  }
+
+  .desktop-nav .nav-link {
+    font-size: 14px;
+    font-weight: 400;
+    color: #888;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    transition: color 0.15s;
+    letter-spacing: -0.2px;
+  }
+  .desktop-nav .nav-link.active { color: #ededed; }
+  .desktop-nav .nav-link:hover  { color: #ededed; }
+
+  :global(html.light) .desktop-nav .nav-link        { color: #666; }
+  :global(html.light) .desktop-nav .nav-link.active  { color: #111; }
+  :global(html.light) .desktop-nav .nav-link:hover   { color: #111; }
+
+  /* Right-side controls */
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  /* Icon buttons */
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 9999px;
+    border: 1px solid #1e1e1e;
+    background: transparent;
+    color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+    flex-shrink: 0;
+  }
+  .icon-btn:hover { border-color: #333; color: #ededed; }
+
+  :global(html.light) .icon-btn       { border-color: #ddd; color: #666; }
+  :global(html.light) .icon-btn:hover { border-color: #bbb; color: #111; }
+
+  /* Sun/moon visibility — toggled via JS */
+  #icon-moon { display: none; }
+
+  /* X icon hidden by default — JS shows it when menu is open */
+  #icon-x { display: none; }
+
+  /* Hamburger hidden on desktop, no border */
+  .hamburger-btn { display: none; border: none; }
+
+  /* Mobile dropdown */
+  .mobile-nav {
+    padding: 8px 16px 14px;
+    border-top: 1px solid #111;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  :global(html.light) .mobile-nav { border-top-color: #e5e5e5; }
+
+  .mobile-nav[hidden] { display: none !important; }
+
+  .mobile-nav-link {
+    font-size: 15px;
+    font-weight: 400;
+    color: #888;
+    padding: 10px 12px;
+    border-radius: 8px;
+    transition: color 0.15s, background 0.15s;
+    display: block;
+  }
+  .mobile-nav-link:hover  { color: #ededed; background: rgba(255,255,255,0.05); }
+  .mobile-nav-link.active { color: #ededed; }
+
+  :global(html.light) .mobile-nav-link        { color: #555; }
+  :global(html.light) .mobile-nav-link:hover   { color: #111; background: rgba(0,0,0,0.04); }
+  :global(html.light) .mobile-nav-link.active  { color: #111; }
+
+  /* Mobile breakpoint */
+  @media (max-width: 639px) {
+    .desktop-nav   { display: none; }
+    .hamburger-btn { display: flex; }
+  }
+</style>
+
+<script>
+  const html        = document.documentElement;
+  const themeToggle = document.getElementById('theme-toggle') as HTMLButtonElement | null;
+  const iconSun     = document.getElementById('icon-sun')  as SVGElement | null;
+  const iconMoon    = document.getElementById('icon-moon') as SVGElement | null;
+  const menuToggle  = document.getElementById('menu-toggle') as HTMLButtonElement | null;
+  const mobileMenu  = document.getElementById('mobile-menu') as HTMLElement | null;
+  const iconBars    = document.getElementById('icon-bars') as SVGElement | null;
+  const iconX       = document.getElementById('icon-x')   as SVGElement | null;
+
+  // ── Theme ────────────────────────────────────────────────────
+  function applyTheme(light: boolean) {
+    html.classList.toggle('light', light);
+    if (iconSun)  iconSun.style.display  = light ? 'none'  : '';
+    if (iconMoon) iconMoon.style.display = light ? 'block' : 'none';
+    themeToggle?.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
+    document.dispatchEvent(new CustomEvent('theme-change'));
+  }
+
+  // Restore saved preference (FOUC already handled by inline script in <head>)
+  applyTheme(localStorage.getItem('theme') === 'light');
+
+  themeToggle?.addEventListener('click', () => {
+    const nowLight = !html.classList.contains('light');
+    localStorage.setItem('theme', nowLight ? 'light' : 'dark');
+    applyTheme(nowLight);
+  });
+
+  // ── Hamburger ─────────────────────────────────────────────────
+  function setMenuOpen(open: boolean) {
+    if (!mobileMenu || !menuToggle) return;
+    open ? mobileMenu.removeAttribute('hidden') : mobileMenu.setAttribute('hidden', '');
+    menuToggle.setAttribute('aria-expanded', String(open));
+    menuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    if (iconBars) iconBars.style.display = open ? 'none'  : '';
+    if (iconX)    iconX.style.display    = open ? 'block' : 'none';
+  }
+
+  menuToggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setMenuOpen(mobileMenu?.hasAttribute('hidden') ?? true);
+  });
+
+  // Close when any mobile link is tapped
+  mobileMenu?.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => setMenuOpen(false));
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    const header = document.getElementById('site-header');
+    if (header && !header.contains(e.target as Node)) setMenuOpen(false);
+  });
+</script>

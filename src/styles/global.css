@@ -1,0 +1,287 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #000000;
+  --bg-soft: #0a0a0a;
+  --card: #0d0d0d;
+  --border: #1a1a1a;
+  --border-strong: #2e2e2e;
+  --text: #ededed;
+  --text-sec: #888888;
+  --text-muted: #444444;
+  --accent: #0070f3;
+  --radius: 8px;
+  --radius-sm: 6px;
+  --radius-lg: 12px;
+}
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+::selection {
+  background: #ffffff;
+  color: #000000;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+input, select, textarea { font-family: inherit; font-size: inherit; }
+
+/* ─── Time input clock icon — white in dark mode ─── */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+/* ─── Calc inputs ─── */
+.calc-input {
+  height: 40px;
+  background: #050505;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 0 12px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.calc-input:focus { border-color: var(--border-strong); }
+
+select.calc-input {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23888' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-color: #050505;
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+select.calc-input option { background: #111; color: #ededed; }
+
+/* ─── Card ─── */
+.calc-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 1px rgba(0,0,0,0.4), 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* ─── Status badge ─── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.status-badge.neutral { background: #0d0d0d; color: #444; border: 1px solid #1a1a1a; }
+.status-badge.safe    { background: #0a2212; color: #34d273; border: 1px solid #1a3a28; }
+.status-badge.warn    { background: #271a00; color: #f5a623; border: 1px solid #3a2800; }
+.status-badge.danger  { background: #2a0505; color: #ef4444; border: 1px solid #3a0a0a; }
+
+/* ─── Warning banner ─── */
+.warning-banner {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background: #1e0a0a;
+  border: 1px solid #3a1010;
+  color: #ef4444;
+  font-size: 14px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+/* ─── Nav hover ─── */
+.nav-link:hover { color: var(--text) !important; }
+.footer-link:hover { color: #aaa !important; }
+
+/* ─── Form inputs on other pages ─── */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-field label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-sec);
+}
+
+.form-control {
+  height: 44px;
+  background: #080808;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 0 14px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+
+.form-control:focus { border-color: #444; }
+
+textarea.form-control {
+  height: 120px;
+  padding: 12px 14px;
+  resize: vertical;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   Light theme
+   ─────────────────────────────────────────────────────────────── */
+html.light {
+  --bg:           #f8f8f8;
+  --bg-soft:      #f0f0f0;
+  --card:         #ffffff;
+  --border:       #e5e5e5;
+  --border-strong:#cccccc;
+  --text:         #111111;
+  --text-sec:     #555555;
+  --text-muted:   #aaaaaa;
+  color-scheme: light;
+}
+
+/* Page sections with hardcoded dark backgrounds */
+html.light section {
+  background: var(--bg) !important;
+  border-top-color: #e5e5e5 !important;
+}
+
+/* Heading colours */
+html.light h1 { color: #111 !important; }
+html.light h2 { color: #111 !important; }
+html.light h3 { color: #222 !important; }
+
+/* Body copy */
+html.light p   { color: #555 !important; }
+html.light strong { color: #111 !important; }
+
+/* FAQ accordion */
+html.light details { border-color: #e5e5e5 !important; }
+html.light details summary { color: #222 !important; }
+html.light details summary span { color: #bbb !important; }
+
+/* Footer */
+html.light footer {
+  background: var(--bg) !important;
+  border-top-color: #e5e5e5 !important;
+}
+html.light .footer-link       { color: #666 !important; }
+html.light .footer-link:hover { color: #111 !important; }
+
+/* ─── Light — calc card + inputs ─── */
+html.light .calc-card {
+  background: #ffffff;
+  border-color: #e8e8e8;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+}
+
+html.light .calc-input {
+  background: #ffffff !important;
+  border-color: #e0e0e0 !important;
+  color: #111 !important;
+}
+html.light .calc-input:focus { border-color: #aaa !important; }
+
+html.light select.calc-input {
+  background-color: #ffffff !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23666' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
+}
+html.light select.calc-input option { background: #fff; color: #111; }
+
+/* Reset clock icon to dark in light mode */
+html.light input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: none;
+}
+
+/* ─── Light — status badges ─── */
+html.light .status-badge.neutral { background: #f5f5f5; color: #888;    border-color: #e0e0e0; }
+html.light .status-badge.safe    { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
+html.light .status-badge.warn    { background: #fffbeb; color: #d97706; border-color: #fde68a; }
+html.light .status-badge.danger  { background: #fff1f2; color: #dc2626; border-color: #fecdd3; }
+
+/* ─── Light — warning banner ─── */
+html.light .warning-banner {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #dc2626;
+}
+
+/* ─── Light — scrollbar ─── */
+html.light ::-webkit-scrollbar-track { background: var(--bg); }
+html.light ::-webkit-scrollbar-thumb { background: #ccc; }
+
+/* ─── Light — calc card internals (hardcoded borders + labels) ─── */
+html.light #current-mg { color: #111 !important; }
+
+/* Inner separators that use border-top: 1px solid #111 */
+html.light .calc-card div[style*="border-top"] {
+  border-top-color: #e8e8e8 !important;
+}
+
+/* "Add another drink" button */
+html.light #add-drink {
+  border-color: #e0e0e0 !important;
+  color: #666 !important;
+}
+html.light #add-drink:hover {
+  border-color: #aaa !important;
+  color: #111 !important;
+}
+
+/* Remove btn */
+html.light .remove-btn {
+  border-color: #e0e0e0 !important;
+  color: #aaa !important;
+}
+html.light .remove-btn:hover {
+  color: #dc2626 !important;
+  border-color: #fca5a5 !important;
+}
+
+/* Chart legend text */
+html.light #chart-legend span[style*="color:#555"] { color: #888 !important; }
+
+/* ─── Light — contact form inputs ─── */
+html.light .form-control {
+  background: #ffffff;
+  border-color: #e0e0e0;
+  color: #111;
+}
+html.light .form-control:focus { border-color: #aaa; }
+
+/* ─── Light — about key facts box ─── */
+html.light .key-facts-box {
+  background: #ffffff !important;
+  border-color: #e5e5e5 !important;
+}
+
+/* ─── Light — output row stat labels & values ─── */
+html.light .stat-label  { color: #111 !important; }
+html.light .stat-sub    { color: #666 !important; }
+html.light #clears-at   { color: #111 !important; }

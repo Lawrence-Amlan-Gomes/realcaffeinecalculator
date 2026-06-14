@@ -1,0 +1,86 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="About — Real Caffeine Calculator"
+  description="Real Caffeine Calculator is a free browser-based tool that shows you exactly how much caffeine is in your body right now, and when it's safe to sleep."
+  canonical="https://realcaffeinecalculator.com/about"
+>
+
+<section style="padding: 72px 24px 96px;">
+  <div style="max-width: 640px; margin: 0 auto;">
+
+    <p style="font-size: 12px; font-weight: 500; color: #555; letter-spacing: 0.6px; text-transform: uppercase; font-family: 'Courier New', monospace; margin-bottom: 20px;">
+      About
+    </p>
+
+    <h1 style="font-size: 36px; font-weight: 600; letter-spacing: -1.4px; color: #fff; line-height: 1.1; margin-bottom: 32px;">
+      What is Real Caffeine Calculator?
+    </h1>
+
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <p style="font-size: 16px; color: #888; line-height: 1.75;">
+        Real Caffeine Calculator is a free, browser-based tool that uses the scientific caffeine half-life formula to show you exactly how much caffeine is circulating in your bloodstream at any given moment. Log your drinks, set your bedtime, and see a live decay chart — no account, no app, no tracking.
+      </p>
+      <p style="font-size: 16px; color: #888; line-height: 1.75;">
+        The calculator supports drinks from Starbucks, Dunkin', energy drinks like Bang and Monster, home-brewed coffee, teas, and custom inputs. It accounts for multiple drinks consumed at different times and sizes, summing their independent decay curves to give you an accurate total.
+      </p>
+      <p style="font-size: 16px; color: #888; line-height: 1.75;">
+        It's built for anyone who cares about sleep quality, athletic recovery, or simply wants to make smarter decisions about when to have that next cup. The science is straightforward: caffeine has a 5-hour half-life in most adults, and keeping your bedtime level below 50mg gives your body the best shot at restful sleep.
+      </p>
+
+      <div class="key-facts-box" style="
+        margin-top: 12px;
+        padding: 20px 24px;
+        background: #0d0d0d;
+        border: 1px solid #1a1a1a;
+        border-radius: 12px;
+      ">
+        <p style="font-size: 13px; font-weight: 500; color: #555; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-family: 'Courier New', monospace;">
+          Key facts
+        </p>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px;">
+          {[
+            'Caffeine half-life: 5 hours for most healthy adults',
+            'Sleep-safe threshold: 50mg remaining',
+            'FDA daily limit: 400mg',
+            'All calculation runs in your browser — no data is sent anywhere',
+            'No sign-up, no tracking, completely free',
+          ].map(fact => (
+            <li style="display: flex; gap: 10px; font-size: 14px; color: #888; align-items: flex-start;">
+              <span style="color: #2e7d32; flex-shrink: 0; margin-top: 1px;">✓</span>
+              <span>{fact}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <p style="font-size: 14px; color: #555; line-height: 1.7; margin-top: 8px;">
+        This tool is for informational purposes only and does not constitute medical advice. If you have concerns about caffeine sensitivity, heart conditions, or sleep disorders, consult a healthcare professional.
+      </p>
+    </div>
+
+    <div style="margin-top: 48px; padding-top: 32px; border-top: 1px solid #111;">
+      <a href="/" style="
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 44px;
+        padding: 0 20px;
+        background: #fff;
+        color: #000;
+        border-radius: 9999px;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: -0.2px;
+        transition: opacity 0.15s;
+      " onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
+        Open the calculator →
+      </a>
+    </div>
+
+  </div>
+</section>
+
+</Layout>
