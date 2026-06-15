@@ -237,7 +237,8 @@ html.light ::-webkit-scrollbar-track { background: var(--bg); }
 html.light ::-webkit-scrollbar-thumb { background: #ccc; }
 
 /* ─── Light — calc card internals (hardcoded borders + labels) ─── */
-html.light #current-mg { color: #111 !important; }
+html.light #current-mg  { color: #111 !important; }
+html.light #safe-until  { color: #111 !important; }
 
 /* Inner separators that use border-top: 1px solid #111 */
 html.light .calc-card div[style*="border-top"] {
