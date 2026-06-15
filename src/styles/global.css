@@ -238,7 +238,7 @@ html.light ::-webkit-scrollbar-thumb { background: #ccc; }
 
 /* ─── Light — calc card internals (hardcoded borders + labels) ─── */
 html.light #current-mg  { color: #111 !important; }
-html.light #safe-until  { color: #111 !important; }
+html.light #safe-until  { color: #111; }
 
 /* Inner separators that use border-top: 1px solid #111 */
 html.light .calc-card div[style*="border-top"] {
@@ -265,8 +265,8 @@ html.light .remove-btn:hover {
   border-color: #fca5a5 !important;
 }
 
-/* Chart legend text */
-html.light #chart-legend span[style*="color:#555"] { color: #888 !important; }
+/* Legend "now" line — dark stroke in light mode */
+html.light .legend-now-line { stroke: rgba(0,0,0,0.5); }
 
 /* ─── Light — contact form inputs ─── */
 html.light .form-control {

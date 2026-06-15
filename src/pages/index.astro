@@ -160,25 +160,25 @@ const faqSchema = {
     <div class="calc-card">
 
       <!-- Hero: safe caffeine cutoff -->
-      <div style="text-align: center; padding: 32px 24px 24px; border-bottom: 1px solid #111;">
-        <div style="font-size: 11px; font-weight: 500; color: #555; letter-spacing: 0.8px; text-transform: uppercase; font-family: 'Courier New', monospace; margin-bottom: 10px;">
+      <div style="text-align: center; padding: 32px 24px 24px;">
+        <div style="font-size: 11px; font-weight: 500; color: var(--text-sec); letter-spacing: 0.8px; text-transform: uppercase; font-family: 'Courier New', monospace; margin-bottom: 10px;">
           You can have caffeine until
         </div>
         <div id="safe-until" style="font-size: 56px; font-weight: 600; letter-spacing: -3px; color: #fff; line-height: 1;">
           —
         </div>
-        <div style="font-size: 12px; color: #555; margin-top: 8px; letter-spacing: -0.1px;">
+        <div style="font-size: 12px; color: var(--text-sec); margin-top: 8px; letter-spacing: -0.1px;">
           Latest safe time based on your bedtime &amp; metabolism
-          <span style="color: #333; font-size: 11px; display: block; margin-top: 2px;">(stays below 25mg at bedtime)</span>
+          <span style="color: #666; font-size: 11px; display: block; margin-top: 2px;">(stays below 25mg at bedtime)</span>
         </div>
       </div>
 
       <!-- Current mg in system -->
       <div style="text-align: center; padding: 28px 24px 20px;">
         <div style="font-size: 72px; font-weight: 600; letter-spacing: -4px; color: #fff; line-height: 1;">
-          <span id="current-mg">0</span><span style="font-size: 28px; font-weight: 400; color: #555; margin-left: 4px; letter-spacing: -1px;">mg</span>
+          <span id="current-mg">0</span><span style="font-size: 28px; font-weight: 400; color: var(--text-sec); margin-left: 4px; letter-spacing: -1px;">mg</span>
         </div>
-        <div style="font-size: 13px; color: #555; margin-top: 6px; letter-spacing: -0.1px;">
+        <div style="font-size: 13px; color: var(--text-sec); margin-top: 6px; letter-spacing: -0.1px;">
           caffeine in your system right now
         </div>
         <div style="margin-top: 14px;">
@@ -204,31 +204,31 @@ const faqSchema = {
         <div id="chart-legend" style="display:none; flex-wrap:wrap; gap:8px 20px; padding:10px 4px 0;">
           <span style="display:flex;align-items:center;gap:6px;">
             <svg width="20" height="8" style="flex-shrink:0"><line x1="0" y1="4" x2="20" y2="4" stroke="#0070f3" stroke-width="2.5" stroke-linecap="round"/></svg>
-            <span style="font-size:11px;color:#555;white-space:nowrap;">Caffeine level</span>
+            <span style="font-size:11px;color:var(--text-sec);white-space:nowrap;">Caffeine level</span>
           </span>
           <span style="display:flex;align-items:center;gap:6px;">
             <svg width="20" height="8" style="flex-shrink:0"><line x1="0" y1="4" x2="20" y2="4" stroke="#f5a623" stroke-width="1.5" stroke-dasharray="5,4"/></svg>
-            <span style="font-size:11px;color:#555;white-space:nowrap;">Sleep threshold (50mg)</span>
+            <span style="font-size:11px;color:var(--text-sec);white-space:nowrap;">Sleep threshold (50mg)</span>
           </span>
           <span style="display:flex;align-items:center;gap:6px;">
-            <svg width="10" height="12" style="flex-shrink:0"><line x1="5" y1="0" x2="5" y2="12" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-dasharray="3,2.5"/></svg>
-            <span style="font-size:11px;color:#555;white-space:nowrap;">Now</span>
+            <svg width="10" height="12" style="flex-shrink:0"><line class="legend-now-line" x1="5" y1="0" x2="5" y2="12" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-dasharray="3,2.5"/></svg>
+            <span style="font-size:11px;color:var(--text-sec);white-space:nowrap;">Now</span>
           </span>
           <span style="display:flex;align-items:center;gap:6px;">
             <svg width="10" height="12" style="flex-shrink:0"><line x1="5" y1="0" x2="5" y2="12" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.85"/></svg>
-            <span style="font-size:11px;color:#555;white-space:nowrap;">Bedtime</span>
+            <span style="font-size:11px;color:var(--text-sec);white-space:nowrap;">Bedtime</span>
           </span>
           <span style="display:flex;align-items:center;gap:6px;">
             <svg width="14" height="8" style="flex-shrink:0"><rect x="0" y="0" width="14" height="8" fill="#22c55e" fill-opacity="0.25" rx="1.5"/></svg>
-            <span style="font-size:11px;color:#555;white-space:nowrap;">Safe (&lt;50mg)</span>
+            <span style="font-size:11px;color:var(--text-sec);white-space:nowrap;">Safe (&lt;50mg)</span>
           </span>
           <span style="display:flex;align-items:center;gap:6px;">
             <svg width="14" height="8" style="flex-shrink:0"><rect x="0" y="0" width="14" height="8" fill="#f5a623" fill-opacity="0.25" rx="1.5"/></svg>
-            <span style="font-size:11px;color:#555;white-space:nowrap;">Moderate (50–150mg)</span>
+            <span style="font-size:11px;color:var(--text-sec);white-space:nowrap;">Moderate (50–150mg)</span>
           </span>
           <span style="display:flex;align-items:center;gap:6px;">
             <svg width="14" height="8" style="flex-shrink:0"><rect x="0" y="0" width="14" height="8" fill="#ef4444" fill-opacity="0.22" rx="1.5"/></svg>
-            <span style="font-size:11px;color:#555;white-space:nowrap;">High (&gt;150mg)</span>
+            <span style="font-size:11px;color:var(--text-sec);white-space:nowrap;">High (&gt;150mg)</span>
           </span>
         </div>
       </div>
@@ -243,17 +243,17 @@ const faqSchema = {
         gap: 12px;
       ">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span class="stat-label" style="font-size: 13px; color: #555;">Caffeine clears at <span class="stat-sub" style="color:#333; font-size:11px;">(below 50mg)</span></span>
+          <span class="stat-label" style="font-size: 13px; color: var(--text-sec);">Caffeine clears at <span class="stat-sub" style="color:#666; font-size:11px;">(below 50mg)</span></span>
           <span id="clears-at" style="font-size: 14px; color: #ededed; font-weight: 500; font-variant-numeric: tabular-nums;">—</span>
         </div>
         <!-- Sleep disruption risk -->
         <div id="sleep-risk-row" style="display:none; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-          <span style="font-size: 13px; color: #555;">Sleep disruption risk <span style="color:#333; font-size:11px;">(<span id="mg-at-bed">0</span>mg at bedtime)</span></span>
+          <span style="font-size: 13px; color: var(--text-sec);">Sleep disruption risk <span style="color:#666; font-size:11px;">(<span id="mg-at-bed">0</span>mg at bedtime)</span></span>
           <span id="sleep-risk-badge" class="status-badge neutral">—</span>
         </div>
         <!-- mg/kg row -->
         <div id="mgkg-row" style="display:none; justify-content:space-between; align-items:center;">
-          <span style="font-size: 13px; color: #555;">Total caffeine load <span style="color:#333; font-size:11px;">(mg per kg bodyweight)</span></span>
+          <span style="font-size: 13px; color: var(--text-sec);">Total caffeine load <span style="color:#666; font-size:11px;">(mg per kg bodyweight)</span></span>
           <span id="mgkg-val" style="font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums;">—</span>
         </div>
       </div>
@@ -650,11 +650,13 @@ const faqSchema = {
     return {
       grid:       light ? '#e8e8e8' : '#111',
       axes:       light ? '#d0d0d0' : '#1e1e1e',
-      tick:       light ? '#999'    : '#333',
-      yLabel:     light ? '#bbb'    : '#2d2d2d',
-      nowText:    light ? '#aaa'    : '#555',
-      emptyMain:  light ? '#bbb'    : '#444',
-      emptySub:   light ? '#d0d0d0' : '#333',
+      tick:       light ? '#999'    : '#666',
+      yLabel:     light ? '#bbb'    : '#555',
+      nowText:    light ? '#666'    : '#888',
+      nowLine:    light ? 'rgba(0,0,0,0.5)'   : 'rgba(255,255,255,0.5)',
+      bedLine:    '#8b5cf6',
+      emptyMain:  light ? '#bbb'    : '#777',
+      emptySub:   light ? '#d0d0d0' : '#555',
     };
   }
 
@@ -716,8 +718,11 @@ const faqSchema = {
     const nowMg_val = nowInRange ? calcCaffeineAt(entries, nowMs, halfLife) : 0;
     const nowY  = nowInRange ? yS(nowMg_val) : null;
 
-    const bedInRange = bedMs >= startMs && bedMs <= endMs;
-    const bedX = bedInRange ? xS(bedMs) : null;
+    let bedMsChart = bedMs;
+    if (bedMsChart > endMs)   bedMsChart -= 86400000;
+    if (bedMsChart < startMs) bedMsChart += 86400000;
+    const bedInRange = bedMsChart >= startMs && bedMsChart <= endMs;
+    const bedX = bedInRange ? xS(bedMsChart) : null;
 
     const xLabels = [];
     for (let h = 0; h <= 24; h += 4) {
@@ -754,13 +759,13 @@ const faqSchema = {
       <text x="${(PL+5).toFixed(1)}" y="${(parseFloat(y50line)-4).toFixed(1)}" fill="#7a5c0a" font-size="9" font-family="Inter,sans-serif">sleep-safe 50mg</text>
 
       ${nowX != null ? `
-        <line x1="${nowX.toFixed(1)}" y1="${(chartTop - 14).toFixed(1)}" x2="${nowX.toFixed(1)}" y2="${chartBottom}" stroke="#ffffff" stroke-width="1" stroke-dasharray="3,3" opacity="0.35"/>
+        <line x1="${nowX.toFixed(1)}" y1="${(chartTop - 14).toFixed(1)}" x2="${nowX.toFixed(1)}" y2="${chartBottom}" stroke="${C.nowLine}" stroke-width="1" stroke-dasharray="3,3"/>
         <text x="${nowX.toFixed(1)}" y="${(chartTop - 18).toFixed(1)}" text-anchor="middle" fill="${C.nowText}" font-size="9" font-family="Inter,sans-serif">now</text>
       ` : ''}
 
       ${bedX != null ? `
-        <line x1="${bedX.toFixed(1)}" y1="${chartTop}" x2="${bedX.toFixed(1)}" y2="${chartBottom}" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.75"/>
-        <text x="${bedX.toFixed(1)}" y="${(chartTop - 5).toFixed(1)}" text-anchor="middle" fill="#8b5cf6" font-size="9" font-family="Inter,sans-serif">bedtime</text>
+        <line x1="${bedX.toFixed(1)}" y1="${chartTop}" x2="${bedX.toFixed(1)}" y2="${chartBottom}" stroke="${C.bedLine}" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="${bedX.toFixed(1)}" y="${(chartTop - 5).toFixed(1)}" text-anchor="middle" fill="${C.bedLine}" font-size="9" font-family="Inter,sans-serif">bedtime</text>
       ` : ''}
 
       <polygon points="${fillPts}" fill="url(#curveGrad)"/>
@@ -829,10 +834,10 @@ const faqSchema = {
         const latestMs = bedMs - hoursNeeded * 3600000;
         if (latestMs < nowMs - 3600000) {
           safeUntilEl.textContent = 'Window passed';
-          safeUntilEl.style.color = isLight ? '#aaa' : '#555';
+          safeUntilEl.style.color = isLight ? '#999' : '#777';
         } else {
           safeUntilEl.textContent = formatTime(latestMs);
-          safeUntilEl.style.color = '';
+          safeUntilEl.style.color = '#22c55e';
         }
       }
     }

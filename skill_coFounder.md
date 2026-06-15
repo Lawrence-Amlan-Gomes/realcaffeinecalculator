@@ -67,27 +67,28 @@ When triggered, Claude:
 
 ## Last Session
 
-**Date**: 2026-06-15
+**Date**: 2026-06-16
 **What we did**:
-- Ran competitive research: Caffeine Informer, Jitterliss, FatCalc, Omni, RISE, gkbrk
-- Identified 5 product weaknesses vs competitors (no metabolism, no explicit sleep time, thin drink DB, no credibility, no SEO content)
-- Implemented all 4 improvements in one pass and pushed to GitHub (commit `106e3f8`)
+- Removed divider line between the two hero stat blocks ("You can have caffeine until" / "Xmg in system")
+- Fixed chart marker bugs: "now" line was hardcoded white (invisible in light), bedtime line had opacity making it faint — both made theme-aware
+- Fixed bedtime line disappearing when drinks logged: drinks shift to "yesterday" when entered as future times, pushing bedtime outside the 24h chart window — fixed by adjusting bedMsChart ±24h to always land in range
+- Fixed "None today" not showing red in light mode — CSS `!important` override was blocking JS color
+- Brightened all dark-mode secondary text: inline `#555`/`#333` → `var(--text-sec)` / `#666`; chart ticks, labels, empty state all lifted
+- Safe-until hero: time shown → green (`#22c55e`), "Window passed" → muted gray, "None today" → red in both themes
 
 **Decisions made**:
-- Hero threshold = 25mg (conservative), chart threshold line stays at 50mg (widely referenced)
-- Reference "standard drink" for safe-cutoff calc = 95mg
-- All new drink entries are size-specific + fixed: true (no multipliers needed)
-- Citations: NIH, FDA, Drake 2013, AASM, USDA FoodData
+- Use `var(--text-sec)` (CSS custom property) for secondary text — theme-aware, no separate light overrides needed
+- Chart color object (`C`) now has explicit `nowLine` and `bedLine` keys for clarity
 
 **Files changed**:
-- `src/pages/index.astro` — metabolism selector, hero output, sleep risk badge, DRINK_GROUPS, citations section, updated FAQ/SEO copy
-- `src/styles/global.css` — added `html.light #safe-until` override
+- `src/pages/index.astro` — hero divider, chart colors, safe-until JS logic, stat row text colors
+- `src/styles/global.css` — removed `!important` from `#safe-until`, removed broken legend override, added legend-now-line light rule
 
 ---
 
 ## Up Next
 
-1. **Deploy to prod** — `wrangler deploy` hasn't been run yet for this session's changes; confirm live on realcaffeinecalculator.com
+1. **Deploy to prod** — `wrangler deploy` not yet run for this or last session's changes; confirm live on realcaffeinecalculator.com
 2. **SEO content gap** — biggest growth lever. Zero blog, zero informational content. Competitors rank for "how long does caffeine last," "caffeine and pregnancy," etc. Need content pages or expanded SEO sections.
 3. **Monetization brainstorm** — no revenue yet. Affiliate links (coffee gear, supplements)? Sponsored content? Need a decision on direction before building.
 
