@@ -10,7 +10,7 @@ const faqSchema = {
       "name": "How does the caffeine calculator work?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "It uses caffeine's half-life to calculate how much remains in your system over time. For most adults the half-life is 5 hours — but it ranges from 3 hours (fast metabolizers, smokers) to 15 hours (pregnant). Enter your drink and time consumed — the calculator shows your current caffeine level and projects when it's safe to sleep."
+        "text": "The calculator applies the standard pharmacokinetic exponential decay formula: remaining_mg = dose_mg × (0.5 ^ (hours_elapsed / half_life)). Enter your drinks and the times you consumed them — the calculator sums each drink's independent decay curve to show your exact caffeine level right now, plots a 24-hour chart, and works backwards from your bedtime to find the latest safe cutoff time. The metabolism selector adjusts the half-life for your biology: 3 hours (fast metabolizer or smoker), 5 hours (normal), 8 hours (slow), or 9–15 hours (pregnant)."
       }
     },
     {
@@ -18,7 +18,15 @@ const faqSchema = {
       "name": "What is caffeine half-life?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Caffeine half-life is the time it takes your body to eliminate half the caffeine in your bloodstream. For most healthy adults it's about 5 hours, meaning a 200mg coffee at noon leaves ~100mg at 5pm and ~50mg at 10pm."
+        "text": "Caffeine half-life is the time it takes your body to eliminate half the caffeine in your bloodstream. For most healthy adults it averages 5 hours — meaning a 200mg coffee at noon leaves roughly 100mg at 5pm, 50mg at 10pm, and 25mg by 3am. This is why an afternoon coffee can still be active at midnight even though you don't feel stimulated."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long does caffeine stay in your system?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Caffeine is never fully 'gone' — it decays exponentially. For most adults (5-hour half-life), a 200mg coffee is mostly cleared after 20–25 hours, but meaningful amounts remain much sooner: ~100mg after 5 hours, ~50mg after 10 hours, ~25mg after 15 hours. At 50mg, most adults experience minimal sleep disruption. At 25mg, caffeine's effect on sleep architecture is negligible for most people. Fast metabolizers (3-hour half-life) clear caffeine roughly twice as fast; slow metabolizers and pregnant women can retain significant caffeine 12–18 hours after consumption."
       }
     },
     {
@@ -26,7 +34,7 @@ const faqSchema = {
       "name": "How much caffeine is safe per day?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The FDA considers 400mg per day safe for healthy adults. That's roughly 4 standard cups of home-brewed coffee. The calculator warns you if you exceed this limit."
+        "text": "The FDA considers 400mg per day safe for healthy adults — roughly 4 standard 8oz cups of drip coffee. Above 400mg, caffeine commonly causes increased heart rate, anxiety, headaches, and severe sleep disruption. Pregnant women should stay under 200mg daily. Children and adolescents should avoid caffeine entirely. People with slow CYP1A2 enzyme variants may feel effects at half the typical dose. The calculator flags your total intake when it exceeds the 400mg daily limit."
       }
     },
     {
@@ -34,7 +42,23 @@ const faqSchema = {
       "name": "When should I stop drinking coffee before bed?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Use your bedtime as the target. The calculator works backwards from your bedtime to find the latest safe time to consume caffeine. For an 11pm bedtime with normal metabolism, your last coffee should typically be before 1-2pm."
+        "text": "Research published in the Journal of Clinical Sleep Medicine found that caffeine consumed as early as 6 hours before bed reduces total sleep time by more than an hour — even when subjects reported falling asleep normally. For an 11pm bedtime with normal metabolism (5-hour half-life), your last standard coffee should typically be before 1–2pm. Fast metabolizers can safely drink coffee until 3–4pm. Slow metabolizers may need to cut off by noon. The 'Safe Until' display at the top of this calculator shows your exact personal cutoff based on your metabolism and bedtime."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between a fast and slow caffeine metabolizer?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Caffeine clearance is controlled by the CYP1A2 enzyme in the liver. People with a 'rapid' CYP1A2 genetic variant clear caffeine in roughly 3 hours — they can drink coffee in the afternoon and sleep soundly. Those with the 'slow' variant take 8 hours or more to clear the same amount — a noon espresso can still be disrupting their sleep at midnight. Smoking induces CYP1A2, effectively making smokers fast metabolizers. Pregnancy suppresses CYP1A2 significantly, extending caffeine half-life to 9–15 hours. You can select your metabolism type in the calculator to get accurate projections for your biology."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is caffeine safe during pregnancy?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Major health bodies including the WHO and ACOG recommend pregnant women limit caffeine to under 200mg per day — half the standard adult limit. This is because pregnancy suppresses the CYP1A2 enzyme that metabolizes caffeine, extending caffeine half-life to 9–15 hours instead of the usual 5. Caffeine also crosses the placenta, and the developing fetus cannot metabolize it. Even at lower doses, high caffeine intake during pregnancy is associated with increased risk of low birth weight and preterm birth. Select 'Pregnant' in the metabolism dropdown to see how much longer caffeine stays in your system."
       }
     },
     {
@@ -42,7 +66,15 @@ const faqSchema = {
       "name": "Does body weight affect caffeine metabolism?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Body weight has a minor effect on caffeine distribution but does not significantly change metabolism rate. Genetics (CYP1A2 enzyme variants), pregnancy, and smoking are the dominant factors affecting how fast you clear caffeine."
+        "text": "Body weight has a minor effect on caffeine distribution — heavier individuals have a larger volume of distribution, slightly diluting the peak concentration — but it does not significantly change the metabolism rate. Genetics (CYP1A2 enzyme variants), pregnancy, and smoking are the dominant factors. The mg/kg field in the calculator shows your caffeine load relative to body weight: under 3 mg/kg is considered low, 3–6 mg/kg is moderate, and above 6 mg/kg is high. These thresholds are used in research contexts to standardize caffeine dosing across body sizes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does caffeine affect sleep quality?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Caffeine blocks adenosine receptors — the brain's primary sleep-pressure signal — creating a false sense of alertness that suppresses deep, restorative sleep stages (slow-wave and REM sleep) even when you fall asleep normally. This means caffeine can reduce sleep quality without obviously disrupting sleep onset. You may fall asleep fine but wake feeling unrefreshed because you got less deep sleep. Sleep disruption from caffeine can occur even at levels as low as 100mg remaining in your system at bedtime. At 50mg, most people experience minimal disruption. The calculator's sleep risk badge (Low / Moderate / High) reflects your projected caffeine level at bedtime."
       }
     }
   ]
@@ -184,6 +216,9 @@ const faqSchema = {
         <div style="margin-top: 14px;">
           <span id="status-badge" class="status-badge neutral">Log a drink to start</span>
         </div>
+        <div id="sleep-after-hint" style="display:none; font-size: 13px; color: var(--text-sec); margin-top: 10px;">
+          You can sleep after <span id="sleep-after-time" style="color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums;"></span>
+        </div>
       </div>
 
       <!-- Chart -->
@@ -294,6 +329,15 @@ const faqSchema = {
 
       <div>
         <h3 style="font-size: 16px; font-weight: 600; color: #ededed; margin-bottom: 10px; letter-spacing: -0.3px;">
+          How long does caffeine stay in your system?
+        </h3>
+        <p style="font-size: 15px; color: #888; line-height: 1.75;">
+          Caffeine never reaches zero — it decays exponentially, halving every few hours until the amount is too small to matter. For a typical adult (5-hour half-life), a single 200mg coffee takes about 20–25 hours to become negligible, but the meaningful window is much shorter: at 10 hours out, you're down to ~50mg, which most adults can sleep through. At 15 hours out, you're at ~25mg — a level with minimal impact on sleep architecture for most people. The practical answer: for a normal metabolizer, caffeine from a morning coffee is functionally gone by that evening. Caffeine from an afternoon coffee is still active at midnight. Fast metabolizers clear it in half the time; slow metabolizers and pregnant women take twice as long or more. The <strong style="color:#ededed; font-weight:500;">caffeine clearance chart</strong> below the calculator shows your exact decay curve from first drink to 24 hours later.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="font-size: 16px; font-weight: 600; color: #ededed; margin-bottom: 10px; letter-spacing: -0.3px;">
           How metabolism affects caffeine clearance
         </h3>
         <p style="font-size: 15px; color: #888; line-height: 1.75;">
@@ -306,7 +350,7 @@ const faqSchema = {
           How this caffeine calculator works
         </h3>
         <p style="font-size: 15px; color: #888; line-height: 1.75;">
-          This <strong style="color:#ededed; font-weight:500;">caffeine calculator</strong> applies the standard exponential decay formula: <em>remaining_mg = dose_mg × (0.5 ^ (hours_elapsed / half_life))</em>. When you log multiple drinks, each one gets its own independent decay curve, and the calculator sums them at any given moment to show your total. The chart spans from your first drink to 24 hours later. The orange dashed line marks the 50mg sleep-safe threshold. The "Safe until" hero shows the latest time you can have a standard drink (95mg) and still stay below 25mg at bedtime — a conservative benchmark for sleep quality.
+          This <strong style="color:#ededed; font-weight:500;">caffeine calculator</strong> applies the standard exponential decay formula: <em>remaining_mg = dose_mg × (0.5 ^ (hours_elapsed / half_life))</em>. When you log multiple drinks, each one gets its own independent decay curve, and the calculator sums them at any given moment to show your total. The chart spans from your first drink to 24 hours later. The orange dashed line marks the 50mg sleep-safe threshold. The "Safe until" hero shows the latest time you can have a standard drink (95mg) and still stay below 25mg at bedtime — a conservative benchmark for sleep quality. Everything recalculates every 60 seconds so your current mg display is always live.
         </p>
       </div>
 
@@ -315,7 +359,16 @@ const faqSchema = {
           Why timing matters for sleep
         </h3>
         <p style="font-size: 15px; color: #888; line-height: 1.75;">
-          Sleep quality degrades from caffeine well before you "feel" wired. Research published in the Journal of Clinical Sleep Medicine found that caffeine consumed 6 hours before bed reduces total sleep time by over an hour — even when subjects reported falling asleep without difficulty. Caffeine blocks adenosine receptors, the brain's primary sleep-pressure signal, creating a false sense of alertness that suppresses deep, restorative sleep stages. At 50mg remaining, the blocking effect is minimal for most adults. If you're experiencing fragmented sleep, poor recovery, or early morning grogginess, your caffeine timing may be the culprit even if your last cup was hours ago.
+          Sleep quality degrades from caffeine well before you "feel" wired. Research published in the Journal of Clinical Sleep Medicine found that caffeine consumed 6 hours before bed reduces total sleep time by over an hour — even when subjects reported falling asleep without difficulty. Caffeine blocks adenosine receptors, the brain's primary sleep-pressure signal, creating a false sense of alertness that suppresses deep, restorative sleep stages (slow-wave and REM) without obviously disrupting sleep onset. This means you can fall asleep fine but wake feeling unrefreshed, attributing it to stress or poor sleep hygiene when the real culprit is a 3pm latte. At 50mg remaining at bedtime, the adenosine-blocking effect is minimal for most adults. If you're experiencing fragmented sleep, poor recovery, or persistent morning grogginess, check the sleep disruption risk badge — your caffeine timing is likely the variable.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="font-size: 16px; font-weight: 600; color: #ededed; margin-bottom: 10px; letter-spacing: -0.3px;">
+          Caffeine sensitivity, tolerance, and dependence
+        </h3>
+        <p style="font-size: 15px; color: #888; line-height: 1.75;">
+          Caffeine sensitivity — how strongly you respond to a given dose — is partly genetic (CYP1A2 variants) and partly a function of adenosine receptor density, which varies between individuals. People with high sensitivity feel jittery and anxious at doses that barely affect others. Caffeine <em>tolerance</em> is different: with daily use, the brain upregulates adenosine receptors to compensate, meaning the same dose produces weaker effects over time. This is why habitual coffee drinkers need more caffeine to feel the same boost. Tolerance doesn't change how fast you metabolize caffeine — the half-life stays the same — so even tolerant users still have significant caffeine in their system affecting sleep architecture, they just don't <em>feel</em> it as stimulation. This makes the <strong style="color:#ededed; font-weight:500;">caffeine in system calculator</strong> especially useful for heavy drinkers who underestimate their load because they've stopped feeling wired.
         </p>
       </div>
 
@@ -333,7 +386,7 @@ const faqSchema = {
           How different drinks compare
         </h3>
         <p style="font-size: 15px; color: #888; line-height: 1.75;">
-          Caffeine content varies enormously between drinks. A Starbucks Cold Brew 16oz packs 205mg — more than three espresso shots. Energy drinks raise the stakes further: Bang Energy and Reign deliver 300mg per can, Celsius hits 200mg, while Monster contains 160mg and Red Bull sits at 80–151mg depending on size. Death Wish Coffee 12oz delivers a staggering 728mg — nearly double the FDA daily limit in a single cup. Traditional beverages are more modest — home-brewed drip coffee averages 95mg per 8oz, black tea contains around 47mg, and green tea a lighter 28mg. Log your actual drinks in this <strong style="color:#ededed; font-weight:500;">caffeine calculator</strong> to see exactly where your day's intake lands versus the 400mg daily limit — no estimating required.
+          Caffeine content varies enormously between drinks. A Starbucks Cold Brew 16oz packs 205mg — more than three espresso shots. Energy drinks raise the stakes further: Bang Energy and Reign deliver 300mg per can, Celsius hits 200mg, while Monster contains 160mg and Red Bull sits at 80–151mg depending on size. Death Wish Coffee 12oz delivers a staggering 728mg — nearly double the FDA daily limit in a single cup. Traditional beverages are more modest — home-brewed drip coffee averages 95mg per 8oz, black tea contains around 47mg, and green tea a lighter 28mg. A common blind spot: many people track coffee carefully but forget that pre-workout supplements (150–300mg), some sodas (34–69mg per can), and even certain medications contain caffeine. Log your actual drinks in this <strong style="color:#ededed; font-weight:500;">caffeine calculator</strong> to see exactly where your day's intake lands versus the 400mg daily limit — no estimating required.
         </p>
       </div>
 
@@ -361,7 +414,7 @@ const faqSchema = {
           <span style="color: #444; font-size: 20px; font-weight: 300; flex-shrink: 0; margin-left: 16px;">+</span>
         </summary>
         <p style="font-size: 15px; color: #888; line-height: 1.75; margin-top: 12px; margin-bottom: 0;">
-          It uses caffeine's half-life to calculate how much remains in your system over time. Enter your drink, size, and time consumed — the calculator shows your current caffeine level, projects when it drops below safe thresholds, and shows the latest safe time to have caffeine before bed.
+          The calculator applies the pharmacokinetic exponential decay formula: <em>remaining_mg = dose_mg × (0.5 ^ (hours_elapsed / half_life))</em>. Enter your drinks and the times you had them — each gets its own decay curve, and they're summed to show your real-time total. The chart plots your full day from first drink to 24 hours later. The "Safe until" display works backwards from your bedtime to find the latest time you could have a standard 95mg drink and still stay below 25mg at sleep — a conservative threshold backed by sleep research. Everything recalculates every 60 seconds.
         </p>
       </details>
 
@@ -371,7 +424,17 @@ const faqSchema = {
           <span style="color: #444; font-size: 20px; font-weight: 300; flex-shrink: 0; margin-left: 16px;">+</span>
         </summary>
         <p style="font-size: 15px; color: #888; line-height: 1.75; margin-top: 12px; margin-bottom: 0;">
-          Caffeine half-life is the time it takes your body to eliminate half the caffeine in your system. For most adults it's about 5 hours, meaning a 200mg coffee at noon leaves ~100mg at 5pm and ~50mg at 10pm.
+          Caffeine half-life is the time it takes your body to eliminate half the caffeine in your bloodstream. For most healthy adults it's about 5 hours — meaning a 200mg coffee at noon leaves roughly 100mg at 5pm, 50mg at 10pm, and 25mg by 3am. This exponential decay is why timing your last drink matters so much: it's not just about how much you drink, but when.
+        </p>
+      </details>
+
+      <details style="border-top: 1px solid #111; padding: 20px 0;">
+        <summary style="font-size: 16px; font-weight: 600; color: #ededed; cursor: pointer; letter-spacing: -0.3px; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+          How long does caffeine stay in your system?
+          <span style="color: #444; font-size: 20px; font-weight: 300; flex-shrink: 0; margin-left: 16px;">+</span>
+        </summary>
+        <p style="font-size: 15px; color: #888; line-height: 1.75; margin-top: 12px; margin-bottom: 0;">
+          For a typical adult (5-hour half-life), a 200mg coffee is mostly cleared after 20–25 hours, but meaningful amounts remain much sooner: ~100mg after 5 hours, ~50mg after 10 hours, ~25mg after 15 hours. Fast metabolizers (3-hour half-life) clear caffeine roughly twice as fast. Slow metabolizers and pregnant women can retain significant caffeine 12–18 hours after consumption. The practical threshold most research uses: at 50mg or below, sleep disruption is minimal for most people.
         </p>
       </details>
 
@@ -381,7 +444,7 @@ const faqSchema = {
           <span style="color: #444; font-size: 20px; font-weight: 300; flex-shrink: 0; margin-left: 16px;">+</span>
         </summary>
         <p style="font-size: 15px; color: #888; line-height: 1.75; margin-top: 12px; margin-bottom: 0;">
-          The FDA considers 400mg per day safe for healthy adults. That's roughly 4 standard cups of home-brewed coffee. The calculator warns you if you exceed this limit.
+          The FDA considers 400mg per day safe for healthy adults — roughly 4 standard 8oz cups of home-brewed coffee. Above this, caffeine commonly causes anxiety, increased heart rate, and severe sleep disruption. Pregnant women should stay under 200mg daily. Children and adolescents should avoid caffeine entirely. People with slow CYP1A2 variants may experience strong effects at half the typical dose. The calculator shows a red warning banner when your logged intake exceeds 400mg.
         </p>
       </details>
 
@@ -391,17 +454,47 @@ const faqSchema = {
           <span style="color: #444; font-size: 20px; font-weight: 300; flex-shrink: 0; margin-left: 16px;">+</span>
         </summary>
         <p style="font-size: 15px; color: #888; line-height: 1.75; margin-top: 12px; margin-bottom: 0;">
-          Use your bedtime as the target. The calculator works backwards from your bedtime to find the latest safe time to consume caffeine. For an 11pm bedtime with normal metabolism, your last coffee should typically be before 1–2pm.
+          Research shows caffeine consumed 6 hours before bed reduces total sleep time by over an hour — even when subjects felt they slept normally. For an 11pm bedtime with average metabolism, your last standard coffee should be before 1–2pm. Fast metabolizers can push this to 3–4pm. Slow metabolizers may need to cut off by noon. The "Safe until" display at the top of this calculator shows your exact personal cutoff based on your metabolism setting and bedtime.
         </p>
       </details>
 
-      <details style="border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 20px 0;">
+      <details style="border-top: 1px solid #111; padding: 20px 0;">
+        <summary style="font-size: 16px; font-weight: 600; color: #ededed; cursor: pointer; letter-spacing: -0.3px; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+          What is the difference between a fast and slow caffeine metabolizer?
+          <span style="color: #444; font-size: 20px; font-weight: 300; flex-shrink: 0; margin-left: 16px;">+</span>
+        </summary>
+        <p style="font-size: 15px; color: #888; line-height: 1.75; margin-top: 12px; margin-bottom: 0;">
+          Caffeine clearance is controlled by the CYP1A2 enzyme in the liver. People with a "rapid" CYP1A2 genetic variant clear caffeine in ~3 hours and can drink coffee in the afternoon without sleep issues. Those with the "slow" variant take 8+ hours — a noon espresso can still be disrupting their sleep at midnight. Smoking induces CYP1A2 (speeds clearance to ~3 hours). Pregnancy suppresses it, extending half-life to 9–15 hours. Select your type in the metabolism dropdown to see projections matched to your actual biology.
+        </p>
+      </details>
+
+      <details style="border-top: 1px solid #111; padding: 20px 0;">
+        <summary style="font-size: 16px; font-weight: 600; color: #ededed; cursor: pointer; letter-spacing: -0.3px; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+          Is caffeine safe during pregnancy?
+          <span style="color: #444; font-size: 20px; font-weight: 300; flex-shrink: 0; margin-left: 16px;">+</span>
+        </summary>
+        <p style="font-size: 15px; color: #888; line-height: 1.75; margin-top: 12px; margin-bottom: 0;">
+          Major health bodies including the WHO and ACOG recommend pregnant women limit caffeine to under 200mg per day. Pregnancy suppresses the CYP1A2 enzyme, extending caffeine half-life to 9–15 hours instead of the usual 5. Caffeine also crosses the placenta, and the developing fetus cannot metabolize it. High caffeine intake during pregnancy is associated with increased risk of low birth weight and preterm birth. Select "Pregnant" in the metabolism dropdown to see how much longer caffeine stays in your system — the difference is significant.
+        </p>
+      </details>
+
+      <details style="border-top: 1px solid #111; padding: 20px 0;">
         <summary style="font-size: 16px; font-weight: 600; color: #ededed; cursor: pointer; letter-spacing: -0.3px; list-style: none; display: flex; justify-content: space-between; align-items: center;">
           Does body weight affect caffeine metabolism?
           <span style="color: #444; font-size: 20px; font-weight: 300; flex-shrink: 0; margin-left: 16px;">+</span>
         </summary>
         <p style="font-size: 15px; color: #888; line-height: 1.75; margin-top: 12px; margin-bottom: 0;">
-          Body weight has a minor effect on caffeine distribution but does not significantly change metabolism rate. Genetics (CYP1A2 enzyme variants), pregnancy, and smoking are the dominant factors affecting how fast you clear caffeine.
+          Body weight has a minor effect on caffeine distribution — heavier individuals have a larger volume of distribution, slightly diluting peak concentration — but it does not significantly change the metabolism rate. Genetics (CYP1A2 enzyme variants), pregnancy, and smoking are the dominant factors. The mg/kg field in the calculator shows your load relative to body weight: under 3 mg/kg is low, 3–6 mg/kg is moderate, above 6 mg/kg is high — the thresholds used in research to standardize dosing across body sizes.
+        </p>
+      </details>
+
+      <details style="border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 20px 0;">
+        <summary style="font-size: 16px; font-weight: 600; color: #ededed; cursor: pointer; letter-spacing: -0.3px; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+          How does caffeine affect sleep quality?
+          <span style="color: #444; font-size: 20px; font-weight: 300; flex-shrink: 0; margin-left: 16px;">+</span>
+        </summary>
+        <p style="font-size: 15px; color: #888; line-height: 1.75; margin-top: 12px; margin-bottom: 0;">
+          Caffeine blocks adenosine receptors — the brain's primary sleep-pressure signal — suppressing slow-wave and REM sleep even when you fall asleep normally. This means caffeine can degrade sleep quality without obviously disrupting onset: you fall asleep fine but wake unrefreshed because you got less deep sleep. This is especially common in people with high caffeine tolerance who don't "feel" stimulated but still have significant caffeine in their system. The sleep disruption risk badge (Low / Moderate / High) in the calculator reflects your projected caffeine level at bedtime, not just how much you consumed.
         </p>
       </details>
 
@@ -803,19 +896,40 @@ const faqSchema = {
 
     // ── Status badge ──
     const badge = document.getElementById('status-badge');
+    const sleepAfterHint = document.getElementById('sleep-after-hint');
+    const sleepAfterTimeEl = document.getElementById('sleep-after-time');
     if (badge) {
       if (!hasData) {
         badge.className  = 'status-badge neutral';
         badge.textContent = 'Log a drink to start';
+        if (sleepAfterHint) sleepAfterHint.style.display = 'none';
       } else if (currentMg <= 50) {
         badge.className  = 'status-badge safe';
         badge.textContent = 'Safe to sleep';
-      } else if (currentMg <= 150) {
-        badge.className  = 'status-badge warn';
-        badge.textContent = 'Cutting it close';
+        if (sleepAfterHint && sleepAfterTimeEl) {
+          const d = new Date(nowMs);
+          const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          sleepAfterTimeEl.textContent = formatTime(nowMs) + ', ' + dateStr;
+          sleepAfterHint.style.display = 'block';
+        }
       } else {
-        badge.className  = 'status-badge danger';
-        badge.textContent = 'Too much for sleep';
+        badge.className  = currentMg <= 150 ? 'status-badge warn' : 'status-badge danger';
+        badge.textContent = currentMg <= 150 ? 'Cutting it close' : 'Too much for sleep';
+        if (sleepAfterHint && sleepAfterTimeEl) {
+          let clearMs = null;
+          for (let min = 0; min <= 1440; min += 5) {
+            const t = nowMs + min * 60000;
+            if (calcCaffeineAt(validEntries, t, halfLife) < 50) { clearMs = t; break; }
+          }
+          if (clearMs) {
+            const d = new Date(clearMs);
+            const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            sleepAfterTimeEl.textContent = formatTime(clearMs) + ', ' + dateStr;
+            sleepAfterHint.style.display = 'block';
+          } else {
+            sleepAfterHint.style.display = 'none';
+          }
+        }
       }
     }
 
