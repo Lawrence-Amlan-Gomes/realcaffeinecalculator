@@ -59,46 +59,51 @@ When triggered, Claude:
 **What it does**: Logs caffeine drinks, calculates mg in system now using metabolism-adjusted half-life, shows explicit "safe until" cutoff time, projects sleep disruption risk.
 **Stage**: Live, early traction, solo founder building
 **Stack**: Astro 6, Tailwind CSS v4, Cloudflare Workers Assets
-**Pages**: Home (calculator), About, Contact, Privacy Policy, Terms
+**Pages**: Home (calculator), About, Contact, Privacy Policy, Terms, `/how-long-does-caffeine-stay-in-your-system`
 **Analytics**: Google Analytics G-NTQMBGZE6N
-**Monetization**: None yet
+**Monetization**: Ad-supported (Google AdSense — under review as of 2026-06-24, up to 4 weeks)
 
 ---
 
 ## Last Session
 
-**Date**: 2026-06-16
+**Date**: 2026-06-27
 **What we did**:
-- Removed divider line between the two hero stat blocks ("You can have caffeine until" / "Xmg in system")
-- Fixed chart marker bugs: "now" line was hardcoded white (invisible in light), bedtime line had opacity making it faint — both made theme-aware
-- Fixed bedtime line disappearing when drinks logged: drinks shift to "yesterday" when entered as future times, pushing bedtime outside the 24h chart window — fixed by adjusting bedMsChart ±24h to always land in range
-- Fixed "None today" not showing red in light mode — CSS `!important` override was blocking JS color
-- Brightened all dark-mode secondary text: inline `#555`/`#333` → `var(--text-sec)` / `#666`; chart ticks, labels, empty state all lifted
-- Safe-until hero: time shown → green (`#22c55e`), "Window passed" → muted gray, "None today" → red in both themes
+- Reviewed GA data: ~55 users/week, 100% Direct traffic, zero organic search channel yet (site is 6 weeks old)
+- Ran PageSpeed Insights: mobile score 58, LCP 7.1s, CLS 0.124 — regression matched timing of AdSense script deploy (2026-06-21)
+- Fixed: moved AdSense script from `<head>` to end of `<body>` → mobile score 88, LCP 3.2s, CLS 0.043 (green)
+- Confirmed CLS was from the script itself (not from `<ins>` units — account still under review, no ads serving)
+- Built new SEO content page: `/how-long-does-caffeine-stay-in-your-system` with embedded mini calculator
+- Pushed both changes to main; CI/CD deployed; GSC indexing requested + Bing submitted by Lawrence
+- Strategy session with second co-founder (Claude relay): aligned on cluster-first SEO, dedicated landing pages over blog posts, ad-supported monetization model
 
 **Decisions made**:
-- Use `var(--text-sec)` (CSS custom property) for secondary text — theme-aware, no separate light overrides needed
-- Chart color object (`C`) now has explicit `nowLine` and `bedLine` keys for clarity
+- Monetization: ad-supported (Google AdSense), free to users — decided this session
+- SEO strategy: cluster-first (supporting pages help homepage rank via internal link equity)
+- Content format: dedicated landing pages, not blog posts (evergreen, better intent match, higher dwell time)
+- Mini calculator on content pages: include metabolism selector (it's our differentiator), show both "clears at" + "safe until" outputs
+- LCP at 3.2s is acceptable for now — not in Google's penalty zone (>4s), fix to green next session via self-hosting Inter
 
 **Files changed**:
-- `src/pages/index.astro` — hero divider, chart colors, safe-until JS logic, stat row text colors
-- `src/styles/global.css` — removed `!important` from `#safe-until`, removed broken legend override, added legend-now-line light rule
+- `src/layouts/Layout.astro` — AdSense script moved from `<head>` to end of `<body>`
+- `src/pages/how-long-does-caffeine-stay-in-your-system.astro` — new content page (created)
 
 ---
 
 ## Up Next
 
-1. **Deploy to prod** — `wrangler deploy` not yet run for this or last session's changes; confirm live on realcaffeinecalculator.com
-2. **SEO content gap** — biggest growth lever. Zero blog, zero informational content. Competitors rank for "how long does caffeine last," "caffeine and pregnancy," etc. Need content pages or expanded SEO sections.
-3. **Monetization brainstorm** — no revenue yet. Affiliate links (coffee gear, supplements)? Sponsored content? Need a decision on direction before building.
+1. **Check GSC for new page impressions** — check around 2026-07-11 (14 days post-submit). Did the half-life cluster expand? Any surprise queries?
+2. **Second content page** — two candidates: `caffeine-and-pregnancy` (our metabolism selector already covers it) or a caffeine mg-reference page (captured "how much is 50mg of caffeine" query already). Pick one and build it.
+3. **AdSense approval** — expected by ~2026-07-22. On approval: place `<ins>` units with explicit `min-height` containers to prevent CLS. Homepage + content page both need slots.
+4. **LCP to green** — self-host Inter font to remove the render-blocking Google Fonts stylesheet. Quick task, pushes mobile LCP from 3.2s → likely under 2.5s (Google's "good" threshold).
 
 ---
 
 ## Open Questions
 
-- What's the monetization play? Options: affiliate links, sponsorships, premium features (e.g. personalized report PDF), none (keep pure, grow via SEO).
+- Which second content page first: `caffeine-and-pregnancy` or caffeine mg-reference? The mg-reference already has GSC signal ("how much is 50mg/91mg of caffeine" impressions).
+- Ad placement strategy post-approval: above fold on homepage? In-content on content pages? Both?
 - Should we add a "Share my results" button? Virality mechanism — users share their caffeine curve screenshot.
-- Is 25mg the right hero threshold or should it be user-configurable (some users want 50mg)?
 - Is there a meaningful audience for a "caffeine diary" / history feature, or is one-shot the right UX?
 
 ---
