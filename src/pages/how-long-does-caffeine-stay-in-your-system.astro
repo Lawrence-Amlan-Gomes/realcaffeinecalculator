@@ -1,0 +1,320 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="How Long Does Caffeine Stay in Your System? | Real Caffeine Calculator"
+  description="Caffeine's half-life is 5 hours on average — but pregnancy, smoking, and genetics change it dramatically. Use the calculator to find your exact clearance time."
+>
+
+<!-- ─── Hero ─── -->
+<section style="padding: 56px 24px 40px; text-align: center;">
+  <div style="max-width: 680px; margin: 0 auto;">
+    <h1 style="font-size: 36px; font-weight: 600; letter-spacing: -1.4px; color: var(--text); line-height: 1.1; margin-bottom: 20px;">
+      How Long Does Caffeine Stay in Your System?
+    </h1>
+    <p style="font-size: 16px; color: var(--text-sec); line-height: 1.75; max-width: 580px; margin: 0 auto; text-align: left;">
+      The short answer is 5 hours — but that's caffeine's average half-life, meaning your body eliminates half of it every 5 hours. A 200mg coffee at noon still leaves ~50mg active at 10&nbsp;PM for most people. The real answer depends on your metabolism, not just your dose. Genetics, pregnancy, and smoking all shift caffeine's half-life anywhere from 3 to 15 hours. Use our <a href="/" style="color: #0070f3; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">caffeine calculator</a> to see exactly how long caffeine stays in your body based on your biology and bedtime — and the latest time you can safely drink caffeine today. The calculator below is a simplified version; the link goes to the full one.
+    </p>
+  </div>
+</section>
+
+<!-- ─── Ad slot ─── -->
+<section style="padding: 0 24px 24px;">
+  <div style="max-width: 720px; margin: 0 auto;">
+    <div class="ad-slot" style="min-height: 280px; background: var(--bg-soft); border-radius: var(--radius); border: 1px solid var(--border);"></div>
+  </div>
+</section>
+
+<!-- ─── Mini calculator ─── -->
+<section style="padding: 0 24px 64px;">
+  <div style="max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px;">
+
+    <!-- Inputs card -->
+    <div class="calc-card" style="padding: 24px;">
+      <div style="font-size: 12px; font-weight: 500; color: var(--text-sec); letter-spacing: 0.6px; text-transform: uppercase; font-family: 'Courier New', monospace; margin-bottom: 18px;">
+        Your Caffeine
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <label style="display: block; font-size: 12px; color: var(--text-sec); margin-bottom: 6px; font-weight: 500;">
+            Drink
+          </label>
+          <select id="mini-drink" class="calc-input" style="width: 100%;">
+            <optgroup label="Coffee">
+              <option value="75">Espresso (75mg)</option>
+              <option value="140" selected>Drip Coffee (140mg)</option>
+              <option value="200">Cold Brew (200mg)</option>
+            </optgroup>
+            <optgroup label="Energy Drinks">
+              <option value="80">Red Bull 8oz (80mg)</option>
+              <option value="160">Monster 16oz (160mg)</option>
+            </optgroup>
+            <optgroup label="Tea &amp; Other">
+              <option value="30">Green Tea (30mg)</option>
+              <option value="50">Black Tea (50mg)</option>
+            </optgroup>
+            <optgroup label="Custom">
+              <option value="custom">Custom (enter mg)</option>
+            </optgroup>
+          </select>
+        </div>
+        <div>
+          <label style="display: block; font-size: 12px; color: var(--text-sec); margin-bottom: 6px; font-weight: 500;">
+            Metabolism type
+          </label>
+          <select id="mini-metabolism" class="calc-input" style="width: 100%;">
+            <option value="5">Normal — 5h half-life</option>
+            <option value="3">Fast metabolizer — 3h</option>
+            <option value="8">Slow metabolizer — 8h</option>
+            <option value="15">Pregnant — 15h half-life</option>
+            <option value="3">Smoker — 3h half-life</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="mini-custom-row" style="display: none; margin-top: 12px;">
+        <label style="display: block; font-size: 12px; color: var(--text-sec); margin-bottom: 6px; font-weight: 500;">
+          Caffeine amount (mg)
+        </label>
+        <input
+          type="number"
+          id="mini-custom-mg"
+          class="calc-input"
+          placeholder="e.g. 100"
+          min="1"
+          max="2000"
+          style="width: 160px;"
+        />
+      </div>
+
+      <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+        <label style="display: block; font-size: 12px; color: var(--text-sec); margin-bottom: 6px; font-weight: 500;">
+          Bedtime
+        </label>
+        <input type="time" id="mini-bedtime" class="calc-input" value="23:00" style="width: 160px;" />
+      </div>
+    </div>
+
+    <!-- Outputs card -->
+    <div class="calc-card" style="padding: 32px 24px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+
+        <div style="text-align: center;">
+          <div style="font-size: 11px; font-weight: 500; color: var(--text-sec); letter-spacing: 0.8px; text-transform: uppercase; font-family: 'Courier New', monospace; margin-bottom: 10px;">
+            Clears at
+          </div>
+          <div id="mini-clears-at" style="font-size: 40px; font-weight: 600; letter-spacing: -2px; color: var(--text); line-height: 1;">
+            —
+          </div>
+          <div style="font-size: 12px; color: var(--text-sec); margin-top: 8px; line-height: 1.5;">
+            Below 10mg if consumed right now
+          </div>
+        </div>
+
+        <div style="text-align: center;">
+          <div style="font-size: 11px; font-weight: 500; color: var(--text-sec); letter-spacing: 0.8px; text-transform: uppercase; font-family: 'Courier New', monospace; margin-bottom: 10px;">
+            Safe until
+          </div>
+          <div id="mini-safe-until" style="font-size: 40px; font-weight: 600; letter-spacing: -2px; color: var(--text); line-height: 1;">
+            —
+          </div>
+          <div style="font-size: 12px; color: var(--text-sec); margin-top: 8px; line-height: 1.5;">
+            Latest drink time to stay below 25mg at bedtime
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <p style="font-size: 13px; color: var(--text-sec); text-align: center; margin-top: 4px;">
+      Need a decay chart, 29 drinks, and a sleep risk score? <a href="/" style="color: #0070f3; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Use the full caffeine calculator →</a>
+    </p>
+
+  </div>
+</section>
+
+<!-- ─── Science content ─── -->
+<section style="border-top: 1px solid var(--border); padding: 72px 24px; background: var(--bg-soft);">
+  <div style="max-width: 680px; margin: 0 auto;">
+
+    <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -1px; color: var(--text); margin-bottom: 40px; line-height: 1.2;">
+      The Science of Caffeine Clearance
+    </h2>
+
+    <div style="display: flex; flex-direction: column; gap: 36px;">
+
+      <div>
+        <h3 style="font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 10px; letter-spacing: -0.3px;">
+          What half-life means — and why it matters
+        </h3>
+        <p style="font-size: 15px; color: var(--text-sec); line-height: 1.75;">
+          Caffeine follows exponential decay. Your body doesn't clear a fixed number of milligrams per hour — it clears a fixed <em>percentage</em>. For most healthy adults, that percentage produces a half-life of approximately 5 hours, as documented by NIH StatPearls. This means 200mg at noon becomes 100mg at 5&nbsp;PM, 50mg at 10&nbsp;PM, and 25mg by 3&nbsp;AM. It never technically reaches zero, but below 10–25mg, caffeine has negligible physiological effect. The practical threshold most sleep researchers use is 25mg — below this level, caffeine's impact on sleep architecture is minimal for most people.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 10px; letter-spacing: -0.3px;">
+          Factors that change your clearance time
+        </h3>
+        <p style="font-size: 15px; color: var(--text-sec); line-height: 1.75;">
+          The 5-hour average masks enormous real-world variation, driven by four main factors:
+        </p>
+        <ul style="font-size: 15px; color: var(--text-sec); line-height: 1.75; margin-top: 12px; padding-left: 20px; display: flex; flex-direction: column; gap: 10px;">
+          <li><strong style="color: var(--text);">Pregnancy</strong> — suppresses the CYP1A2 liver enzyme significantly, extending caffeine's half-life to 9–15 hours. A drink that clears overnight for a normal adult can take two days for a pregnant woman. WHO and ACOG both recommend keeping intake below 200mg/day during pregnancy.</li>
+          <li><strong style="color: var(--text);">Smoking</strong> — induces CYP1A2, accelerating clearance to roughly 3 hours. Smokers process caffeine about twice as fast as non-smokers — which also explains why quitting smoking often causes people to feel more sensitive to caffeine than before.</li>
+          <li><strong style="color: var(--text);">Genetics (CYP1A2 variants)</strong> — this is the biggest factor for most people. Individuals with the "rapid" CYP1A2 gene variant have a half-life around 3 hours and can drink coffee at 4&nbsp;PM and sleep fine. Those with the "slow" variant have a half-life of 8 hours or more — a noon espresso can still be disrupting their sleep at midnight.</li>
+          <li><strong style="color: var(--text);">Age and liver function</strong> — caffeine clearance slows gradually with age and is significantly impaired by liver disease. Newborns and infants have virtually no caffeine metabolism capacity; half-life in neonates can exceed 100 hours.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 style="font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 10px; letter-spacing: -0.3px;">
+          "Clears at" vs. "Safe until" — what each output means
+        </h3>
+        <p style="font-size: 15px; color: var(--text-sec); line-height: 1.75;">
+          The calculator above shows two distinct numbers. <strong style="color: var(--text);">Clears at</strong> tells you when caffeine will drop below 10mg if you consume your selected drink right now — effectively when it's gone from your system. <strong style="color: var(--text);">Safe until</strong> is different: it works backwards from your bedtime to find the latest time you could consume that drink and still have less than 25mg remaining at sleep. The 25mg threshold comes from FDA guidance and AASM sleep research, which identify this level as having minimal impact on sleep architecture for most people. If you consume caffeine after the "safe until" time, you're likely carrying meaningful caffeine into sleep — even if you fall asleep without difficulty. Caffeine suppresses slow-wave and REM sleep even when sleep onset feels normal.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 10px; letter-spacing: -0.3px;">
+          Your result varies — use the calculator above
+        </h3>
+        <p style="font-size: 15px; color: var(--text-sec); line-height: 1.75;">
+          There's no single answer to "how long does caffeine stay in your system" because there's no single metabolism type. A fast metabolizer with a midnight bedtime has a very different safe window than a pregnant person with a 10&nbsp;PM bedtime. The numbers above are calculated for <em>your</em> selection, not for an average adult. For the full picture — multiple drinks throughout the day, a real-time decay chart showing your cumulative caffeine curve, and a sleep disruption risk score — use the <a href="/" style="color: #0070f3; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">complete caffeine calculator</a>.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ─── -->
+<section style="border-top: 1px solid var(--border); padding: 64px 24px; background: var(--bg); text-align: center;">
+  <div style="max-width: 520px; margin: 0 auto;">
+    <p style="font-size: 16px; color: var(--text-sec); line-height: 1.65; margin-bottom: 24px;">
+      Want the full picture? The complete caffeine calculator includes a real-time decay chart, 29 drinks, and a sleep disruption risk badge.
+    </p>
+    <a
+      href="/"
+      style="
+        display: inline-block;
+        height: 44px;
+        padding: 0 24px;
+        background: #0070f3;
+        color: #fff;
+        font-size: 15px;
+        font-weight: 500;
+        border-radius: var(--radius);
+        text-decoration: none;
+        line-height: 44px;
+        transition: background 0.15s;
+      "
+      onmouseover="this.style.background='#0060df'"
+      onmouseout="this.style.background='#0070f3'"
+    >
+      Open the full calculator →
+    </a>
+  </div>
+</section>
+
+</Layout>
+
+<script>
+  function getHalfLife() {
+    const sel = document.getElementById('mini-metabolism');
+    return parseFloat((sel).value) || 5;
+  }
+
+  function getDoseMg() {
+    const drinkSel = document.getElementById('mini-drink');
+    if (!drinkSel) return 0;
+    const val = (drinkSel).value;
+    if (val === 'custom') {
+      const customIn = document.getElementById('mini-custom-mg');
+      return parseFloat((customIn).value) || 0;
+    }
+    return parseFloat(val) || 0;
+  }
+
+  function getBedtimeMs() {
+    const val = (document.getElementById('mini-bedtime')).value || '23:00';
+    const [h, m] = val.split(':').map(Number);
+    const d = new Date();
+    d.setHours(h, m, 0, 0);
+    let ms = d.getTime();
+    if (ms <= Date.now()) ms += 86400000;
+    return ms;
+  }
+
+  function formatTime(ms) {
+    return new Date(ms).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  }
+
+  function calculate() {
+    const halfLife = getHalfLife();
+    const dose     = getDoseMg();
+    const bedMs    = getBedtimeMs();
+    const nowMs    = Date.now();
+    const isLight  = document.documentElement.classList.contains('light');
+
+    const clearsEl = document.getElementById('mini-clears-at');
+    const safeEl   = document.getElementById('mini-safe-until');
+
+    if (!dose || dose <= 0) {
+      if (clearsEl) { clearsEl.textContent = '—'; clearsEl.style.color = 'var(--text)'; }
+      if (safeEl)   { safeEl.textContent   = '—'; safeEl.style.color   = 'var(--text)'; }
+      return;
+    }
+
+    // Clears at: now + halfLife × log2(dose / 10)
+    if (clearsEl) {
+      if (dose <= 10) {
+        clearsEl.textContent = 'Already clear';
+        clearsEl.style.color = '#22c55e';
+      } else {
+        const clearsMs = nowMs + halfLife * Math.log2(dose / 10) * 3600000;
+        clearsEl.textContent = formatTime(clearsMs);
+        clearsEl.style.color = 'var(--text)';
+      }
+    }
+
+    // Safe until: bedtime − halfLife × log2(dose / 25)
+    if (safeEl) {
+      if (dose <= 25) {
+        safeEl.textContent = 'Any time';
+        safeEl.style.color = '#22c55e';
+      } else {
+        const safeMs = bedMs - halfLife * Math.log2(dose / 25) * 3600000;
+        if (safeMs < nowMs - 3600000) {
+          safeEl.textContent = 'Window passed';
+          safeEl.style.color = isLight ? '#999' : '#777';
+        } else {
+          safeEl.textContent = formatTime(safeMs);
+          safeEl.style.color = '#22c55e';
+        }
+      }
+    }
+  }
+
+  function syncCustomVisibility() {
+    const drinkSel  = document.getElementById('mini-drink');
+    const customRow = document.getElementById('mini-custom-row');
+    if (!drinkSel || !customRow) return;
+    (customRow).style.display = (drinkSel).value === 'custom' ? 'block' : 'none';
+  }
+
+  document.getElementById('mini-drink')?.addEventListener('change', () => {
+    syncCustomVisibility();
+    calculate();
+  });
+  document.getElementById('mini-metabolism')?.addEventListener('change', calculate);
+  document.getElementById('mini-bedtime')?.addEventListener('change', calculate);
+  document.getElementById('mini-custom-mg')?.addEventListener('input', calculate);
+  document.addEventListener('theme-change', calculate);
+
+  calculate();
+  setInterval(calculate, 60000);
+</script>
